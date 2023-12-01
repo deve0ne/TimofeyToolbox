@@ -1,50 +1,68 @@
 import bpy
-from bpy.types import Panel
+
 
 class OBJECT_PT_MeshCheckPanel(bpy.types.Panel):
     bl_label = "Mesh Check"
     bl_idname = "OBJECT_PT_mesh_check_panel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_options = {'HEADER_LAYOUT_EXPAND'}
-    bl_category = 'TimofeyToolbox'
+    bl_options = {"HEADER_LAYOUT_EXPAND"}
+    bl_category = "TimofeyToolbox"
 
     def draw(self, context):
         layout = self.layout
         scene = context.scene
         obj = context.active_object
 
-        # Operator for checking attributes
-        check_op = layout.operator("object.check_faces_attribute", text="Check Smooth Groups")
+        layout.operator("object.find_no_sg_faces", text="Check Smooth Groups")
+        layout.operator(
+            "object.find_loose_verts_edges", text="Find Loose Vertices and Edges"
+        )
 
-        # Centered label for the results section
         row = layout.row()
-        # row.alignment = 'CENTER'
         row.label(text="Results:")
 
-        # Create a box for results
         results_box = layout.box()
 
-        if obj and obj.type == 'MESH':
-            # Check if we are in Edit Mode
-            if context.mode == 'EDIT_MESH' and "faces_to_select" in obj:
-                # Button for selecting faces - active in Edit Mode
-                select_faces_op = results_box.operator(
-                    "object.select_faces_with_attr_zero", 
-                    text=f"{len(obj['faces_to_select'])} Faces with no Smooth Group"
-                )
-            elif context.mode == 'OBJECT':
-                # Text field for attribute results - visible in Object Mode
-                results_box.label(text=scene.attribute_check_results)
+        if obj and obj.type == "MESH" and "no_sg_faces" in obj:
+            no_sg_faces_count = len(obj["no_sg_faces"])
+
+            resultText = (
+                f"{no_sg_faces_count} Faces with no Smooth Group"
+                if no_sg_faces_count != 0
+                else "All faces have Smoothing groups"
+            )
+
+            if context.mode == "EDIT_MESH":
+                results_box.operator("object.select_no_sg_faces", text=resultText)
+            elif context.mode == "OBJECT":
+                results_box.label(text=resultText)
+
+            if obj and obj.type == "MESH" and ("loose_verts" in obj or "loose_edges" in obj):
+                loose_verts_count = len(obj["loose_verts"]) if "loose_verts" in obj else 0
+                loose_edges_count = len(obj["loose_edges"]) if "loose_edges" in obj else 0
+    
+                # Combined text for loose vertices and edges
+                combined_text = f"Loose: {loose_verts_count} Verts & {loose_edges_count} Edges"
+    
+                # Check the mode to determine if it should be a label or a button
+                if context.mode == "EDIT_MESH":
+                    # In Edit mode, display as a button for selection
+                    if loose_verts_count > 0 or loose_edges_count > 0:
+                        results_box.operator("object.select_loose_verts_edges", text=combined_text)
+                else:
+                    # In Object mode (or any other mode), display as a label
+                    results_box.label(text=combined_text)
+
 
 class OBJECT_PT_MeshOperationsPanel(bpy.types.Panel):
     bl_label = "Mesh Operations"
     bl_idname = "OBJECT_PT_mesh_operation_panel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_options = {'HEADER_LAYOUT_EXPAND'}
-    bl_category = 'TimofeyToolbox'
-    
+    bl_options = {"HEADER_LAYOUT_EXPAND"}
+    bl_category = "TimofeyToolbox"
+
     def draw(self, context):
         layout = self.layout
         col = layout.column(align=True)
@@ -52,12 +70,19 @@ class OBJECT_PT_MeshOperationsPanel(bpy.types.Panel):
         col.operator("mesh.uv_replace_to_dots", icon="UV")
         col.operator("mesh.box_mapping", icon="UV_DATA")
 
-    
+
+classes = (OBJECT_PT_MeshOperationsPanel, OBJECT_PT_MeshCheckPanel)
+
 
 def register():
-    bpy.utils.register_class(OBJECT_PT_MeshOperationsPanel)
-    bpy.utils.register_class(OBJECT_PT_MeshCheckPanel)
+    for cls in classes:
+        bpy.utils.register_class(cls)
+
 
 def unregister():
-    bpy.utils.unregister_class(OBJECT_PT_MeshOperationsPanel)
-    bpy.utils.unregister_class(OBJECT_PT_MeshCheckPanel)
+    for cls in classes:
+        bpy.utils.unregister_class(cls)
+
+
+if __name__ == "__main__":
+    register()

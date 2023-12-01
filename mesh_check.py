@@ -1,72 +1,141 @@
 import bpy
 import bmesh
 
-class OBJECT_OT_CheckFacesAttribute(bpy.types.Operator):
-    """Check if Faces of Selected Meshes Have a Specific Attribute Value"""
-    bl_idname = "object.check_faces_attribute"
-    bl_label = "Check Smoothing groups"
-    bl_options = {'REGISTER', 'UNDO'}
 
-    attribute_to_check = "SG"
+class OBJECT_OT_FindNoSGfaces(bpy.types.Operator):
+    bl_idname = "object.find_no_sg_faces"
+    bl_label = "Check Smoothing groups"
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-        init_mode = bpy.context.object.mode
-        # print(init_mode)
-        bpy.ops.object.mode_set(mode='OBJECT')
+        original_mode = bpy.context.object.mode
+        bpy.ops.object.mode_set(mode="OBJECT")
 
         obj = context.active_object
-
-        if not obj or obj.type != 'MESH':
-            self.report({'WARNING'}, "Active object is not a mesh")
-            return {'CANCELLED'}
-
         mesh = obj.data
-        if self.attribute_to_check in mesh.attributes:
-            attr = mesh.attributes[self.attribute_to_check].data
-            faces_with_attr_zero = [index for index, face in enumerate(attr) if face.value == 0]
 
-            # Store the indices in the active object's property
-            obj["faces_to_select"] = faces_with_attr_zero
-            context.scene.attribute_check_results = f"{len(faces_with_attr_zero)} faces with no smoothing groups."
-        else:
-            context.scene.attribute_check_results = "Attribute not found on active object."
+        if not obj or obj.type != "MESH":
+            self.report({"WARNING"}, "Active object is not a mesh")
+            return {"CANCELLED"}
 
-        bpy.ops.object.mode_set(mode = init_mode)
-        return {'FINISHED'}
+        if "SG" in mesh.attributes:
+            attr = mesh.attributes["SG"].data
+            no_sg_faces = [index for index, face in enumerate(attr) if face.value == 0]
 
-class OBJECT_OT_SelectFacesWithAttrZero(bpy.types.Operator):
-    """Select Faces with Attribute Value Zero"""
-    bl_idname = "object.select_faces_with_attr_zero"
+            obj["no_sg_faces"] = no_sg_faces
+
+        if original_mode == "EDIT":
+            bpy.ops.object.mode_set(mode="EDIT")
+            bpy.ops.object.select_no_sg_faces()
+
+        return {"FINISHED"}
+
+
+class OBJECT_OT_SelectNoSGfaces(bpy.types.Operator):
+    bl_idname = "object.select_no_sg_faces"
     bl_label = "Select Faces with No Smooth Group"
 
     def execute(self, context):
         obj = context.active_object
 
-        if not obj or obj.type != 'MESH' or "faces_to_select" not in obj:
-            self.report({'WARNING'}, "No faces to select or active object is not a mesh")
-            return {'CANCELLED'}
+        if not obj or obj.type != "MESH" or "no_sg_faces" not in obj:
+            self.report(
+                {"WARNING"}, "No faces to select or active object is not a mesh"
+            )
+            return {"CANCELLED"}
 
-        # Switch to edit mode
-        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.object.mode_set(mode="EDIT")
 
-        # Select faces
         mesh = bmesh.from_edit_mesh(obj.data)
         mesh.faces.ensure_lookup_table()
-        for index in obj["faces_to_select"]:
+
+        for index in obj["no_sg_faces"]:
             if index < len(mesh.faces):
                 mesh.faces[index].select_set(True)
 
         bmesh.update_edit_mesh(obj.data)
-        return {'FINISHED'}
+        return {"FINISHED"}
+
+
+class OBJECT_OT_FindLooseVertsEdges(bpy.types.Operator):
+    bl_idname = "object.find_loose_verts_edges"
+    bl_label = "Find Loose Vertices and Edges"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        obj = context.active_object
+
+        if not obj or obj.type != "MESH":
+            self.report({"WARNING"}, "Active object is not a mesh")
+            return {"CANCELLED"}
+
+        bpy.ops.object.mode_set(mode="OBJECT")
+
+        mesh = bmesh.new()
+        mesh.from_mesh(obj.data)
+
+        # Finding loose vertices and edges
+        loose_verts = [v.index for v in mesh.verts if not v.link_edges]
+        loose_edges = [e.index for e in mesh.edges if not e.link_faces]
+
+        # Storing the results in the object
+        obj["loose_verts"] = loose_verts
+        obj["loose_edges"] = loose_edges
+
+        mesh.free()
+        return {"FINISHED"}
+
+
+class OBJECT_OT_SelectLooseVertsEdges(bpy.types.Operator):
+    bl_idname = "object.select_loose_verts_edges"
+    bl_label = "Select Loose Vertices and Edges"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        obj = context.active_object
+
+        if not obj or obj.type != "MESH" or "loose_verts" not in obj or "loose_edges" not in obj:
+            self.report({"WARNING"}, "No elements to select or active object is not a mesh")
+            return {"CANCELLED"}
+
+        bpy.ops.object.mode_set(mode="EDIT")
+
+        bm = bmesh.from_edit_mesh(obj.data)
+        bm.verts.ensure_lookup_table()
+        bm.edges.ensure_lookup_table()
+
+        # Select loose vertices
+        for v_index in obj["loose_verts"]:
+            if v_index < len(bm.verts):
+                bm.verts[v_index].select_set(True)
+
+        # Select loose edges
+        for e_index in obj["loose_edges"]:
+            if e_index < len(bm.edges):
+                bm.edges[e_index].select_set(True)
+
+        bmesh.update_edit_mesh(obj.data)
+        return {"FINISHED"}
+
+
+
+classes = (
+    OBJECT_OT_FindNoSGfaces,
+    OBJECT_OT_SelectNoSGfaces,
+    OBJECT_OT_SelectLooseVertsEdges,
+    OBJECT_OT_FindLooseVertsEdges,
+)
+
 
 def register():
-    bpy.utils.register_class(OBJECT_OT_CheckFacesAttribute)
-    bpy.utils.register_class(OBJECT_OT_SelectFacesWithAttrZero)
-    bpy.types.Scene.attribute_check_results = bpy.props.StringProperty(name="Results", default="")
+    for cls in classes:
+        bpy.utils.register_class(cls)
+
 
 def unregister():
-    bpy.utils.unregister_class(OBJECT_OT_CheckFacesAttribute)
-    bpy.utils.unregister_class(OBJECT_OT_SelectFacesWithAttrZero)
+    for cls in classes:
+        bpy.utils.unregister_class(cls)
+
 
 if __name__ == "__main__":
     register()
