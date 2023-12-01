@@ -1,13 +1,3 @@
-bl_info = {
-    "name": "TToolbox",
-    "description": "",
-    "author": "Deveone",
-    "version": (1, 1),
-    "blender": (3, 0, 0),
-    "location": "View3D > Sidebar",
-    "category": "3D View",
-}
-
 import bpy
 from mathutils import Matrix
 import math
@@ -156,25 +146,9 @@ class BoxMapping(bpy.types.Operator):
             obj.select_set(True)
             
         return {'FINISHED'}
-    
-
-class SamplePanel(bpy.types.Panel):
-    """ Display panel in 3D view"""
-    bl_label = "TToolbox"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_options = {'HEADER_LAYOUT_EXPAND'}
-    
-    def draw(self, context):
-        layout = self.layout
-        col = layout.column(align=True)
-        col.operator("mesh.remap_dub_materials", icon="MATERIAL")
-        col.operator("mesh.uv_replace_to_dots", icon="UV")
-        col.operator("mesh.box_mapping", icon="UV_DATA")
         
         
 classes = (
-        SamplePanel,
         RemapDublicatedMaterialsOperator,
         UVrenamer,
         BoxMapping
