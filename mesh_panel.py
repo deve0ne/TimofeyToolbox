@@ -69,6 +69,9 @@ class OBJECT_PT_MeshOperationsPanel(bpy.types.Panel):
         col.operator("mesh.remap_dub_materials", icon="MATERIAL")
         col.operator("mesh.uv_replace_to_dots", icon="UV")
         col.operator("mesh.box_mapping", icon="UV_DATA")
+        col.operator("mesh.advanced_init_smooth_groups", icon="UV_DATA")
+        
+
 
 
 classes = (OBJECT_PT_MeshOperationsPanel, OBJECT_PT_MeshCheckPanel)

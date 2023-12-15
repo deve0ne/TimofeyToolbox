@@ -1,6 +1,8 @@
 import bpy
 import math
 
+from .advanced_sg import AdvancedSG, OBJECT_PT_MeshOperationsPanel
+
 
 class RemapDublicatedMaterialsOperator(bpy.types.Operator):
     bl_idname = "mesh.remap_dub_materials"
@@ -174,7 +176,7 @@ class BoxMapping(bpy.types.Operator):
         return {"FINISHED"}
 
 
-classes = (RemapDublicatedMaterialsOperator, UVrenamer, BoxMapping)
+classes = (RemapDublicatedMaterialsOperator, UVrenamer, BoxMapping, AdvancedSG, OBJECT_PT_MeshOperationsPanel)
 
 
 def register():

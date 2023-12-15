@@ -9,10 +9,10 @@ bl_info = {
 
 import bpy
 from . import mesh_check
-from . import mesh_operations
+from . import mesh_ops
 from . import mesh_panel
 
-main_cl = [mesh_check, mesh_operations, mesh_panel]
+main_cl = [mesh_check, mesh_ops, mesh_panel]
 
 def register():
     for c in main_cl:
