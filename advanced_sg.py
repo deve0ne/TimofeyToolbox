@@ -1,3 +1,5 @@
+from re import S
+import select
 import bpy
 import bmesh
 
@@ -11,76 +13,136 @@ class AdvancedSG(bpy.types.Operator):
     def execute(self, context):
         bpy.ops.dt.init_smooth_group()  # init default sg algorithm
 
-        # bpy.ops.object.editmode_toggle()
-
         mesh = context.object.data
-        self.fix_SG(mesh)
+        self.fix_sg(mesh)
 
-        bpy.ops.object.editmode_toggle()
         return {"FINISHED"}
 
-    def fix_SG(self, mesh):
-        # SG=mesh.attributes.get('SG') #SG is <bpy_struct, IntAttribute("SG") at 0x000001E1021F4A08> type
-
-        sg_bug_poly = self.find_one_sg_bug(mesh)
-
-        while sg_bug_poly is not None:
-            # sg_bug_island = expand_sg_bug_poly(sg_bug_poly)
-
-        #     sg_to_reassign = find_free_sg(mesh, sg_bug_island)
-        #     reassign_island_sg(sg_bug_island)
-
-        #     sg_bug_poly = find_one_sg_bug()
+    def fix_sg(self, mesh):
+        i = 0
+        
+        while True:
+            sg_bug = self.find_one_sg_bug(mesh)
+            
+            print(sg_bug)
+            
+            if sg_bug is None:
+                break
+            
+            sg_bug_island = self.expand_sg_bug_poly(mesh, sg_bug[0])
+            print(sg_bug_island)
+            self.select_faces(mesh, sg_bug_island)
+            free_sg = self.find_free_sg(mesh)
+            print(free_sg)
+            self.reassign_island_sg(mesh, sg_bug_island, free_sg)
+            
+            i += 1
+            if i > 100:
+                break
+        
+    # DEBUG
+    def select_faces(self, mesh, faces):
+        bm = bmesh.from_edit_mesh(mesh)
+        bm.faces.ensure_lookup_table()
+        for face in faces:
+            bm.faces[face].select = True
+            
+        # Show the updates in the viewport
+        bmesh.update_edit_mesh(mesh)
 
     def find_one_sg_bug(self, mesh):
+        """
+        Find one sg bug in the given mesh.
+
+        Args:
+            mesh (bpy.types.Mesh): The mesh to search for bugs in.
+
+        Returns:
+            list or None: A list containing the indices of two adjacent faces with the bug, or None if no bug is found.
+        """
         bm = bmesh.from_edit_mesh(mesh)
+        bm.faces.ensure_lookup_table()
+        sg_layer = bm.faces.layers.int.get("SG")
+        
         for face in bm.faces:
-            self.adj_faces_dict = {}
+            adj_faces_dict = {}
 
             for vert in face.verts:
                 for link_face in vert.link_faces:
-                    if link_face.index in self.adj_faces_dict:
-                        self.adj_faces_dict[link_face.index] = (self.adj_faces_dict[link_face.index] + 1)
+                    if link_face[sg_layer] != face[sg_layer]:
+                        continue
+                    
+                    if link_face.index in adj_faces_dict:
+                        adj_faces_dict[link_face.index] = (adj_faces_dict[link_face.index] + 1)
                     else:
-                        self.adj_faces_dict[link_face.index] = 1
+                        adj_faces_dict[link_face.index] = 1
                         
-            sg_bug = {key: value for key, value in self.adj_faces_dict.items() if value == 1}
+            sg_bug = {key: value for key, value in adj_faces_dict.items() if value == 1}
             
             if len(sg_bug) > 0:
                 return [face.index,  sg_bug.popitem()[0]]
-
+            
+        bm.free()
     
         return None
 
-    def expand_sg_bug_poly(mesh, sg_bug_poly):
+    def expand_sg_bug_poly(self, mesh, sg_bug_index):
+        bm = bmesh.from_edit_mesh(mesh)
+        bm.faces.ensure_lookup_table()
+        
+        sg_layer = bm.faces.layers.int.get("SG")
+        
+        sg_bug_face = bm.faces[sg_bug_index]
+        
         sg_bug_island = set()
-        sg_bug_island.add(sg_bug_poly)
+        sg_bug_island.add(sg_bug_index)
+        
         # Use a queue to explore connected polygons
-        queue = [sg_bug_poly]
+        queue = [sg_bug_face]
+        
         while queue:
-            current_poly = queue.pop(0)
-            for vertex in current_poly.vertices:
-                for edge in mesh.edges:
-                    if edge.vertices[0] == vertex or edge.vertices[1] == vertex:
-                        other_poly = (
-                            edge.polygons[1]
-                            if edge.polygons[0] == current_poly
-                            else edge.polygons[0]
-                        )
-                        if (
-                            other_poly.use_smooth
-                            and other_poly.attributes["SG"].value
-                            == sg_bug_poly.attributes["SG"].value
-                        ):
-                            sg_bug_island.add(other_poly)
-                            queue.append(other_poly)
+            current_face = queue.pop(0)
+            # print(f"Current face: {current_face.index}")
+            for edge in current_face.edges:
+                for face in edge.link_faces:
+                    # print(f"face: {face.index} sg: {face[sg_layer]} another face: {current_face.index} sg: {current_face[sg_layer]}")
+                    if face.index not in sg_bug_island and face[sg_layer] == sg_bug_face[sg_layer]:
+                        sg_bug_island.add(face.index)
+                        queue.append(face)
+                        # print(f"Adding face {face.index} to island")
+            
         return sg_bug_island
-
-    # def find_free_sg(mesh, sg_bug_island):
-
-    # def reassign_island_sg(sg_bug_island, sg_to_reassign, ):
-    #     for i in range(SG.data.__len__()):
-    #         SG.data[i].value=fixed_SG[i] if mesh.polygons[i].use_smooth else 0
+    
+    def find_free_sg(self, mesh):
+        bm = bmesh.from_edit_mesh(mesh)
+        bm.faces.ensure_lookup_table()
+        
+        sg_layer = bm.faces.layers.int.get("SG")
+        
+        pressed = set()
+        for face in bm.faces:
+            pressed.add(face[sg_layer])
+        
+        for i in [2**x for x in range(0, 32)]:
+            if i not in pressed:
+                return i
+        
+        return -1
+        
+    
+    def reassign_island_sg(self, mesh, sg_bug_island, sg_to_reassign):
+        bm = bmesh.from_edit_mesh(mesh)
+        bm.faces.ensure_lookup_table()
+        
+        SG = bm.faces.layers.int.get("SG")
+        
+        for face in sg_bug_island:
+            bm.faces[face][SG] = sg_to_reassign
+        
+        bm.faces.ensure_lookup_table()
+        
+        bmesh.update_edit_mesh(mesh)
+            
 
 
 class OBJECT_PT_MeshOperationsPanel(bpy.types.Panel):
