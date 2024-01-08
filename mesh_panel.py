@@ -70,6 +70,8 @@ class OBJECT_PT_MeshOperationsPanel(bpy.types.Panel):
         col.operator("mesh.uv_replace_to_dots", icon="UV")
         col.operator("mesh.box_mapping", icon="UV_DATA")
         col.operator("mesh.advanced_init_smooth_groups", icon="UV_DATA")
+        col.operator("mesh.fix_mat_names", icon="UV_DATA")
+        
         
 
 
