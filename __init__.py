@@ -12,8 +12,10 @@ from . import mesh_check
 from . import mesh_ops
 from . import mesh_panel
 from . import correct_uv_button
+from .misc import texture_optimization
+# from misc import advanced_subdivide
 
-main_cl = [mesh_check, mesh_ops, mesh_panel, correct_uv_button]
+main_cl = [mesh_check, mesh_ops, mesh_panel, correct_uv_button, texture_optimization]
 
 def register():
     for c in main_cl:
