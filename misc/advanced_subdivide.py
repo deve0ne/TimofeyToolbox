@@ -1,6 +1,6 @@
-
 import bpy
 import bmesh
+
 
 class AdvancedSubdivide(bpy.types.Operator):
     bl_idname = "object.advanced_subdivide"
@@ -10,8 +10,8 @@ class AdvancedSubdivide(bpy.types.Operator):
     def execute(self, context):
         # Ensure we're in edit mode
         if context.mode != 'EDIT_MESH':
-            return "CANCELLED";
-        
+            return "CANCELLED"
+
         # Get the active mesh
         obj = bpy.context.edit_object
         me = obj.data
@@ -23,13 +23,13 @@ class AdvancedSubdivide(bpy.types.Operator):
         active_selection = bm.select_history
         if isinstance(active_selection.active, bmesh.types.BMEdge):
             # Subdivide the edge
-            edge=active_selection.active
+            edge = active_selection.active
         if isinstance(active_selection.active, bmesh.types.BMVert):
             # Subdivide the vertices
             selected_verts = [v for v in bm.verts if v.select]
             print(len(selected_verts))
             edge = bm.edges.get(selected_verts)
-            
+
         bmesh.ops.subdivide_edges(bm, edges=[edge], cuts=1)
 
         # Deselect all vertices
@@ -37,19 +37,20 @@ class AdvancedSubdivide(bpy.types.Operator):
             v.select = False
 
         bm.verts.ensure_lookup_table()
-        
+
         # Select the newly created vertex (it should be the last one)
         bm.verts[-1].select = True
         bm.select_history.add(bm.verts[-1])
-       
 
         # Update the mesh
         bmesh.update_edit_mesh(me)
 
         return {'FINISHED'}
 
+
 def register():
     bpy.utils.register_class(AdvancedSubdivide)
+
 
 def unregister():
     bpy.utils.unregister_class(AdvancedSubdivide)

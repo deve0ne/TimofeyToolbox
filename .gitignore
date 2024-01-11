@@ -1,5 +1,3 @@
 TimofeyToolbox.code-workspace
 .vscode
 *.pyc
-__pycache__
-.vscode/settings.json

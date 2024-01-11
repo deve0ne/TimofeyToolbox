@@ -1,5 +1,6 @@
 import bpy
 
+
 class TEXTURE_PT_LimitSizePanel(bpy.types.Panel):
     bl_label = "Scene Optimization"
     bl_idname = "OBJECT_PT_mesh_scene_optimization_panel"
@@ -17,8 +18,10 @@ class TEXTURE_PT_LimitSizePanel(bpy.types.Panel):
         col.prop(system, "gl_texture_limit", text="Limit Size")
         col.prop(system, "anisotropic_filter")
 
+
 def register():
     bpy.utils.register_class(TEXTURE_PT_LimitSizePanel)
+
 
 def unregister():
     bpy.utils.unregister_class(TEXTURE_PT_LimitSizePanel)
