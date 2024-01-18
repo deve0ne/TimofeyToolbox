@@ -12,77 +12,83 @@ class AdvancedSG(bpy.types.Operator):
         bpy.ops.dt.init_smooth_group()  # init default sg algorithm
 
         mesh = context.object.data
-        self.fix_sg(mesh)
+        bm = bmesh.from_edit_mesh(mesh)
+        bm.faces.ensure_lookup_table()
+
+        self.fix_sg(bm)
+        
+        bmesh.update_edit_mesh(mesh)
+        bm.free()
 
         return {"FINISHED"}
 
-    def fix_sg(self, mesh):
-        i = 0
+    def fix_sg(self, bm):
+        iterations = 0
+        
+        sg_layer = bm.faces.layers.int.get("SG")
 
         while True:
-            sg_bug = self.find_one_sg_bug(mesh)
+            sg_bug = self.faind_one_sg_bug(bm, sg_layer)
 
-            print(sg_bug)
-
+            # None means there is no bugs in mesh anymore
             if sg_bug is None:
                 break
 
-            sg_bug_island = self.expand_sg_bug_poly(mesh, sg_bug[0])
-            print(sg_bug_island)
-            self.select_faces(mesh, sg_bug_island)
-            free_sg = self.find_free_sg(mesh)
-            print(free_sg)
-            self.reassign_island_sg(mesh, sg_bug_island, free_sg)
+            sg_bug_island = self.expand_sg_bug_poly(bm, sg_bug[0], sg_layer)
 
-            i += 1
-            if i > 100:
+            print(sg_bug_island)
+
+            free_sg = self.find_free_sg(bm, sg_bug_island)
+
+            self.reassign_island_sg(bm, sg_bug_island, free_sg)
+
+            iterations += 1
+            # print("iter {}".format(i))
+            if iterations > 1000: #Защита от бесконечного цикла
+                print("limited")
                 break
 
-    # DEBUG
-    def select_faces(self, mesh, faces):
-        bm = bmesh.from_edit_mesh(mesh)
-        bm.faces.ensure_lookup_table()
-        for face in faces:
-            bm.faces[face].select = True
+    # Нейрокод
+    def find_one_sg_bug(self, bm, sg_layer):
+        # Словарь для группировки лиц по группам сглаживания
+        sg_dict = {}
 
-        # Show the updates in the viewport
-        bmesh.update_edit_mesh(mesh)
-
-    def find_one_sg_bug(self, mesh):
-        bm = bmesh.from_edit_mesh(mesh)
-        bm.faces.ensure_lookup_table()
-        sg_layer = bm.faces.layers.int.get("SG")
-
+        # Проходим по всем лицам и группируем их по группам сглаживания
         for face in bm.faces:
-            adj_faces_dict = {}
+            sg = face[sg_layer]
+            if sg in sg_dict:
+                sg_dict[sg].append(face)
+            else:
+                sg_dict[sg] = [face]
 
-            for vert in face.verts:
-                for link_face in vert.link_faces:
-                    if link_face[sg_layer] != face[sg_layer]:
-                        continue
+        # Функция для поиска в глубину
+        def dfs(face, visited):
+            visited.add(face)
+            group = [face]
+            for edge in face.edges:
+                for link_face in edge.link_faces:
+                    if link_face not in visited and link_face[sg_layer] == face[sg_layer]:
+                        group.extend(dfs(link_face, visited))
+            return group
 
-                    if link_face.index in adj_faces_dict:
-                        adj_faces_dict[link_face.index] = (
-                            adj_faces_dict[link_face.index] + 1)
-                    else:
-                        adj_faces_dict[link_face.index] = 1
+        # Проходим по всем группам сглаживания и проверяем на наличие багов
+        for sg, faces in sg_dict.items():
+            visited = set()
+            for face in faces:
+                if face not in visited:
+                    # Находим группу полигонов, связанных общими гранями
+                    group = dfs(face, visited)
 
-            sg_bug = {key: value for key,
-                      value in adj_faces_dict.items() if value == 1}
-
-            if len(sg_bug) > 0:
-                return [face.index,  sg_bug.popitem()[0]]
-
-        bm.free()
+                    # Проверяем, есть ли другие группы, которые связаны с этой группой только через общую вершину
+                    for face in group:
+                        for vert in face.verts:
+                            for link_face in vert.link_faces:
+                                if link_face not in group and link_face[sg_layer] == face[sg_layer]:
+                                    return [face.index, link_face.index]
 
         return None
 
-    def expand_sg_bug_poly(self, mesh, sg_bug_index):
-        bm = bmesh.from_edit_mesh(mesh)
-        bm.faces.ensure_lookup_table()
-
-        sg_layer = bm.faces.layers.int.get("SG")
-
+    def expand_sg_bug_poly(self, bm, sg_bug_index, sg_layer):
         sg_bug_face = bm.faces[sg_bug_index]
 
         sg_bug_island = set()
@@ -104,34 +110,33 @@ class AdvancedSG(bpy.types.Operator):
 
         return sg_bug_island
 
-    def find_free_sg(self, mesh):
-        bm = bmesh.from_edit_mesh(mesh)
-        bm.faces.ensure_lookup_table()
-
+    def find_free_sg(self, bm, sg_bug_island):
         sg_layer = bm.faces.layers.int.get("SG")
 
         pressed = set()
-        for face in bm.faces:
+        neigbour_faces = set()
+        for face in sg_bug_island:
+            for vert in bm.faces[face].verts:
+                for face in vert.link_faces:
+                    neigbour_faces.add(face)
+
+        for face in neigbour_faces:
             pressed.add(face[sg_layer])
 
         for i in [2**x for x in range(0, 32)]:
             if i not in pressed:
+                if i == 2**31: # костыль, чтобы не добавлять конвертацию в uint
+                    return -2147483648
                 return i
-
         return -1
 
-    def reassign_island_sg(self, mesh, sg_bug_island, sg_to_reassign):
-        bm = bmesh.from_edit_mesh(mesh)
-        bm.faces.ensure_lookup_table()
-
+    def reassign_island_sg(self, bm, sg_bug_island, sg_to_reassign):
         SG = bm.faces.layers.int.get("SG")
 
         for face in sg_bug_island:
             bm.faces[face][SG] = sg_to_reassign
 
         bm.faces.ensure_lookup_table()
-
-        bmesh.update_edit_mesh(mesh)
 
 
 class OBJECT_PT_MeshSGPanel(bpy.types.Panel):
