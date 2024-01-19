@@ -1,6 +1,7 @@
 from . import report
 import bmesh
 
+
 def execute_check(self, context):
     obj = context.active_object
 
@@ -11,6 +12,7 @@ def execute_check(self, context):
     multiple_obj_warning(self, context)
 
     return {'FINISHED'}
+
 
 def bmesh_copy_from_object(obj, transform=True, triangulate=True, apply_modifiers=False):
     """Returns a transformed, triangulated copy of the mesh"""
@@ -51,6 +53,8 @@ def bmesh_copy_from_object(obj, transform=True, triangulate=True, apply_modifier
 
     return bm
 
+
 def multiple_obj_warning(self, context):
     if len(context.selected_objects) > 1:
-        self.report({"INFO"}, "Multiple selected objects. Only the active one will be evaluated")
+        self.report(
+            {"INFO"}, "Multiple selected objects. Only the active one will be evaluated")

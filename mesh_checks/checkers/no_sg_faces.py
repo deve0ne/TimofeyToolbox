@@ -3,7 +3,7 @@ import bmesh
 from .. import mesh_check_helpers
 
 
-class OBJECT_OT_FindNoSGfaces(bpy.types.Operator):
+class TT_OT_find_no_sg_faces(bpy.types.Operator):
     bl_idname = "tt.find_no_sg_faces"
     bl_label = "Check Smoothing groups"
     bl_options = {"UNDO"}
@@ -14,8 +14,9 @@ class OBJECT_OT_FindNoSGfaces(bpy.types.Operator):
             obj, transform=False, triangulate=False)
         no_sg_faces = []
 
-        if hasattr(obj, "SG"):
-            attr = obj.attributes["SG"].data
+        if "SG" in obj.data.attributes:
+            print("hasattr")
+            attr = obj.data.attributes["SG"].data
 
             no_sg_faces = [index for index,
                            face in enumerate(attr) if face.value == 0]
@@ -35,7 +36,7 @@ class OBJECT_OT_FindNoSGfaces(bpy.types.Operator):
         return mesh_check_helpers.execute_check(self, context)
 
 
-class OBJECT_OT_SelectNoSGfaces(bpy.types.Operator):
+class TT_OT_SelectNoSGfaces(bpy.types.Operator):
     bl_idname = "tt.select_no_sg_faces"
     bl_label = "Select Faces with No Smooth Group"
 
@@ -61,7 +62,7 @@ class OBJECT_OT_SelectNoSGfaces(bpy.types.Operator):
         return {"FINISHED"}
 
 
-classes = [OBJECT_OT_FindNoSGfaces, OBJECT_OT_SelectNoSGfaces]
+classes = [TT_OT_find_no_sg_faces, TT_OT_SelectNoSGfaces]
 
 
 def register():

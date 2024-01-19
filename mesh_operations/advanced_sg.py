@@ -2,7 +2,7 @@ import bpy
 import bmesh
 
 
-class AdvancedSG(bpy.types.Operator):
+class TT_OT_advanced_sg(bpy.types.Operator):
     bl_idname = "tt.advanced_init_smooth_groups"
     bl_label = "Advanced Recalculate SG"
     bl_description = "Initialize smoothing groups"
@@ -16,7 +16,7 @@ class AdvancedSG(bpy.types.Operator):
         bm.faces.ensure_lookup_table()
 
         self.fix_sg(bm)
-        
+
         bmesh.update_edit_mesh(mesh)
         bm.free()
 
@@ -24,11 +24,11 @@ class AdvancedSG(bpy.types.Operator):
 
     def fix_sg(self, bm):
         iterations = 0
-        
+
         sg_layer = bm.faces.layers.int.get("SG")
 
         while True:
-            sg_bug = self.faind_one_sg_bug(bm, sg_layer)
+            sg_bug = self.find_one_sg_bug(bm, sg_layer)
 
             # None means there is no bugs in mesh anymore
             if sg_bug is None:
@@ -44,7 +44,7 @@ class AdvancedSG(bpy.types.Operator):
 
             iterations += 1
             # print("iter {}".format(i))
-            if iterations > 1000: #Защита от бесконечного цикла
+            if iterations > 1000:  # Защита от бесконечного цикла
                 print("limited")
                 break
 
@@ -125,7 +125,7 @@ class AdvancedSG(bpy.types.Operator):
 
         for i in [2**x for x in range(0, 32)]:
             if i not in pressed:
-                if i == 2**31: # костыль, чтобы не добавлять конвертацию в uint
+                if i == 2**31:  # костыль, чтобы не добавлять конвертацию в uint
                     return -2147483648
                 return i
         return -1
@@ -139,9 +139,9 @@ class AdvancedSG(bpy.types.Operator):
         bm.faces.ensure_lookup_table()
 
 
-class OBJECT_PT_MeshSGPanel(bpy.types.Panel):
+class TT_PT_MeshSGPanel(bpy.types.Panel):
     bl_label = "Timofey Toolbox SG"
-    bl_idname = "OBJECT_PT_TT_SG_panel"
+    bl_idname = "TT_PT_TT_SG_panel"
     bl_region_type = "UI"
     bl_space_type = "VIEW_3D"
     bl_category = "Dagor"
@@ -157,7 +157,7 @@ class OBJECT_PT_MeshSGPanel(bpy.types.Panel):
         return context.mode == "EDIT_MESH"
 
 
-classes = [AdvancedSG, OBJECT_PT_MeshSGPanel]
+classes = [TT_OT_advanced_sg, TT_PT_MeshSGPanel]
 
 
 def register():

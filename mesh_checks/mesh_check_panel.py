@@ -1,15 +1,23 @@
 import bpy
 from . import report
-from .select_report import MESH_OT_print3d_select_report
+from bmesh import types
+from .select_report import TT_OT_select_report
 
-class OBJECT_PT_MeshCheckPanel(bpy.types.Panel):
+
+class TT_PT_mesh_check(bpy.types.Panel):
     bl_label = "Mesh Check"
-    bl_idname = "OBJECT_PT_mesh_check_panel"
+    bl_idname = "TT_PT_mesh_check"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options = {"HEADER_LAYOUT_EXPAND"}
     bl_category = "TimofeyToolbox"
-    
+
+    _type_to_icon = {
+        types.BMVert: 'VERTEXSEL',
+        types.BMEdge: 'EDGESEL',
+        types.BMFace: 'FACESEL',
+    }
+
     @classmethod
     def poll(cls, context):
         obj = context.active_object
@@ -26,26 +34,28 @@ class OBJECT_PT_MeshCheckPanel(bpy.types.Panel):
             for i, (text, data) in enumerate(info):
                 if is_edit and data and data[1]:
                     bm_type, _bm_array = data
-                    col.operator("tt.select_report", text=text,).index = i
+                    col.operator("tt.select_report", text=text,
+                                 icon=self._type_to_icon[bm_type]).index = i
                 else:
                     col.label(text=text)
 
     def draw(self, context):
         layout = self.layout
-        # obj = context.active_object
-        
+
         layout.label(text="Checks")
         col = layout.column(align=True)
         col.operator("tt.find_no_sg_faces", text="No SG faces")
         col.operator("tt.find_loose_verts_edges", text="Loose Verts & Edges")
         col.operator("tt.find_incorrect_geometry", text="Incorrect Geometry")
-        
+        col.operator("tt.find_degenerates", text="Degenerates")
+        col.operator("tt.check_manifold", text="Manifold")
+
         layout.operator("tt.check_all", text="Check All")
-        
+
         self.draw_report(context)
-        
-        
-classes = [OBJECT_PT_MeshCheckPanel, MESH_OT_print3d_select_report]
+
+
+classes = [TT_PT_mesh_check, TT_OT_select_report]
 
 
 def register():

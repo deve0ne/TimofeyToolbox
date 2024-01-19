@@ -1,17 +1,18 @@
 import bpy
 import bmesh
 from .. import mesh_check_helpers
-    
-class OBJECT_OT_FindLooseVertsEdges(bpy.types.Operator):
+
+
+class TT_OT_find_loose_verts_edges(bpy.types.Operator):
     bl_idname = "tt.find_loose_verts_edges"
     bl_label = "Find Loose Vertices and Edges"
     bl_options = {"REGISTER", "UNDO"}
-    
-    
+
     @staticmethod
     def main_check(obj, info):
-        bm = mesh_check_helpers.bmesh_copy_from_object(obj, transform=False, triangulate=False)
-        
+        bm = mesh_check_helpers.bmesh_copy_from_object(
+            obj, transform=False, triangulate=False)
+
         # Finding loose vertices and edges
         loose_verts = [v.index for v in bm.verts if not v.link_edges]
         loose_edges = [e.index for e in bm.edges if not e.link_faces]
@@ -22,7 +23,7 @@ class OBJECT_OT_FindLooseVertsEdges(bpy.types.Operator):
                 len(loose_verts)),
                 (bmesh.types.BMVert,
                  loose_verts)))
-        
+
         info.append(
             (("Loose edges: {}").format(
                 len(loose_edges)),
@@ -35,7 +36,7 @@ class OBJECT_OT_FindLooseVertsEdges(bpy.types.Operator):
         return mesh_check_helpers.execute_check(self, context)
 
 
-classes = [OBJECT_OT_FindLooseVertsEdges]
+classes = [TT_OT_find_loose_verts_edges]
 
 
 def register():

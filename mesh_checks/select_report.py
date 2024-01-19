@@ -12,7 +12,8 @@ from bpy.app.translations import pgettext_tip as tip_
 
 from . import report
 
-class MESH_OT_print3d_select_report(Operator):
+
+class TT_OT_select_report(Operator):
     bl_idname = "tt.select_report"
     bl_label = "3D-Print Select Report"
     bl_description = "Select the data associated with this report"
@@ -40,16 +41,17 @@ class MESH_OT_print3d_select_report(Operator):
 
         bpy.ops.mesh.reveal()
         bpy.ops.mesh.select_all(action='DESELECT')
-        
+
         bpy.ops.mesh.select_mode(type=self._type_to_mode[bm_type])
 
         bm = bmesh.from_edit_mesh(obj.data)
-        elems = getattr(bm, MESH_OT_print3d_select_report._type_to_attr[bm_type])[:]
+        elems = getattr(
+            bm, TT_OT_select_report._type_to_attr[bm_type])[:]
 
         try:
             for i in bm_array:
                 elems[i].select_set(True)
-        except Exception as e: 
+        except Exception as e:
             # possible arrays are out of sync
             self.report({'WARNING'}, "Report is out of date, re-run check")
 

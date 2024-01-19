@@ -3,14 +3,15 @@ import bmesh
 from .. import mesh_check_helpers
 
 
-class OBJECT_OT_FindIncorrectGeometry(bpy.types.Operator):
+class TT_OT_find_incorrect_geometry(bpy.types.Operator):
     bl_idname = "tt.find_incorrect_geometry"
     bl_label = "Find incorrect geometry"
     bl_options = {"REGISTER", "UNDO"}
 
     @staticmethod
     def main_check(obj, info):
-        bm = mesh_check_helpers.bmesh_copy_from_object(obj, transform=False, triangulate=False)
+        bm = mesh_check_helpers.bmesh_copy_from_object(
+            obj, transform=False, triangulate=False)
 
         # Finding incorrect geometry
         incorrect_edges = [
@@ -29,7 +30,7 @@ class OBJECT_OT_FindIncorrectGeometry(bpy.types.Operator):
         return mesh_check_helpers.execute_check(self, context)
 
 
-classes = [OBJECT_OT_FindIncorrectGeometry]
+classes = [TT_OT_find_incorrect_geometry]
 
 
 def register():

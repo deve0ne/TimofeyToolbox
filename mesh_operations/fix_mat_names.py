@@ -3,7 +3,7 @@ import re
 import os
 
 
-class FixMatNames(bpy.types.Operator):
+class TT_OT_fix_mat_names(bpy.types.Operator):
     bl_idname = "tt.fix_mat_names"
     bl_label = "Fix Mat Names"
     bl_description = "Remove weird postfixes from mat names"
@@ -41,7 +41,7 @@ class FixMatNames(bpy.types.Operator):
 
         return {'FINISHED'}
     
-classes = [FixMatNames]
+classes = [TT_OT_fix_mat_names]
     
 def register():
     for cls in classes:

@@ -1,20 +1,25 @@
 from bpy.types import Operator
 from bpy.utils import register_class, unregister_class
-from .incorrect_geometry import OBJECT_OT_FindIncorrectGeometry
-from .loose_verts_edges import OBJECT_OT_FindLooseVertsEdges
-from .no_sg_faces import OBJECT_OT_FindNoSGfaces
+from .incorrect_geometry import TT_OT_find_incorrect_geometry
+from .loose_verts_edges import TT_OT_find_loose_verts_edges
+from .no_sg_faces import TT_OT_find_no_sg_faces
+from .degenerates import TT_OT_find_degenerates
+from .manifold import TT_OT_check_manifold
 from .. import report
 from ..mesh_check_helpers import multiple_obj_warning
 
-class TT_Check_all(Operator):
+
+class TT_Check_All(Operator):
     bl_idname = "tt.check_all"
-    bl_label = "TT Check All"
+    bl_label = "Check All"
     bl_description = "Run all checks"
 
     check_cls = (
-        OBJECT_OT_FindNoSGfaces,
-        OBJECT_OT_FindLooseVertsEdges,
-        OBJECT_OT_FindIncorrectGeometry
+        TT_OT_find_no_sg_faces,
+        TT_OT_find_loose_verts_edges,
+        TT_OT_find_incorrect_geometry,
+        TT_OT_find_degenerates,
+        TT_OT_check_manifold
     )
 
     def execute(self, context):
@@ -29,8 +34,9 @@ class TT_Check_all(Operator):
         multiple_obj_warning(self, context)
 
         return {'FINISHED'}
-    
-classes = [TT_Check_all]
+
+
+classes = [TT_Check_All]
 
 
 def register():

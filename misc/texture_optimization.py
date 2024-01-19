@@ -1,9 +1,9 @@
 import bpy
 
 
-class TEXTURE_PT_LimitSizePanel(bpy.types.Panel):
+class TT_PT_texture_optimization(bpy.types.Panel):
     bl_label = "Scene Optimization"
-    bl_idname = "OBJECT_PT_mesh_scene_optimization_panel"
+    bl_idname = "TT_PT_texture_optimization"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options = {"HEADER_LAYOUT_EXPAND"}
@@ -20,8 +20,8 @@ class TEXTURE_PT_LimitSizePanel(bpy.types.Panel):
 
 
 def register():
-    bpy.utils.register_class(TEXTURE_PT_LimitSizePanel)
+    bpy.utils.register_class(TT_PT_texture_optimization)
 
 
 def unregister():
-    bpy.utils.unregister_class(TEXTURE_PT_LimitSizePanel)
+    bpy.utils.unregister_class(TT_PT_texture_optimization)

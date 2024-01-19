@@ -1,7 +1,7 @@
 import bpy
 
 
-class UVrenamer(bpy.types.Operator):
+class TT_OT_uv_renamer(bpy.types.Operator):
     bl_idname = "tt.uv_replace_to_dots"
     bl_label = "Replace underscores to dots in UV names"
 
@@ -17,7 +17,7 @@ class UVrenamer(bpy.types.Operator):
         return {"FINISHED"}
     
 
-classes = [UVrenamer]
+classes = [TT_OT_uv_renamer]
 
 def register():
     for cls in classes:

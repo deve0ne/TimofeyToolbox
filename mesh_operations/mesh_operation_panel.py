@@ -1,8 +1,8 @@
 import bpy
                 
-class OBJECT_PT_MeshOperationsPanel(bpy.types.Panel):
+class TT_PT_mesh_operations(bpy.types.Panel):
     bl_label = "Mesh Operations"
-    bl_idname = "OBJECT_PT_mesh_operation_panel"
+    bl_idname = "TT_PT_mesh_operation"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options = {"HEADER_LAYOUT_EXPAND"}
@@ -21,7 +21,7 @@ class OBJECT_PT_MeshOperationsPanel(bpy.types.Panel):
         col.operator("tt.fix_mat_names", icon="UV_DATA")
 
 
-classes = [OBJECT_PT_MeshOperationsPanel]
+classes = [TT_PT_mesh_operations]
 
 
 def register():

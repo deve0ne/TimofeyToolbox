@@ -17,12 +17,14 @@ classes = [correct_uv_button, texture_optimization]
 ### Mesh checks
 
 from .mesh_checks import mesh_check_panel
-from .mesh_checks.checkers import incorrect_geometry, loose_verts_edges, no_sg_faces, check_all
+from .mesh_checks.checkers import incorrect_geometry, loose_verts_edges, no_sg_faces, degenerates, manifold, check_all
 
 classes.extend([mesh_check_panel,
                 no_sg_faces,
                 loose_verts_edges,
                 incorrect_geometry,
+                degenerates,
+                manifold,
                 check_all])
 
 ### Mesh operations

@@ -2,7 +2,7 @@ import bpy
 import math
 
 
-class BoxMapping(bpy.types.Operator):
+class TT_OT_box_mapping(bpy.types.Operator):
     bl_idname = "tt.box_mapping"
     bl_label = "BoxMapping"
 
@@ -114,7 +114,7 @@ class BoxMapping(bpy.types.Operator):
         return {"FINISHED"}
 
 
-classes = [BoxMapping]
+classes = [TT_OT_box_mapping]
 
 
 def register():

@@ -2,7 +2,7 @@ import bpy
 import bmesh
 
 
-class AdvancedSubdivide(bpy.types.Operator):
+class TT_OT_advanced_subdivide(bpy.types.Operator):
     bl_idname = "tt.advanced_subdivide"
     bl_label = "Advanced Subdivide"
     name: bpy.props.StringProperty()
@@ -49,8 +49,8 @@ class AdvancedSubdivide(bpy.types.Operator):
 
 
 def register():
-    bpy.utils.register_class(AdvancedSubdivide)
+    bpy.utils.register_class(TT_OT_advanced_subdivide)
 
 
 def unregister():
-    bpy.utils.unregister_class(AdvancedSubdivide)
+    bpy.utils.unregister_class(TT_OT_advanced_subdivide)
