@@ -3,7 +3,7 @@ import bmesh
 
 
 class AdvancedSG(bpy.types.Operator):
-    bl_idname = "mesh.advanced_init_smooth_groups"
+    bl_idname = "tt.advanced_init_smooth_groups"
     bl_label = "Advanced Recalculate SG"
     bl_description = "Initialize smoothing groups"
     bl_options = {"UNDO"}
@@ -149,7 +149,7 @@ class OBJECT_PT_MeshSGPanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         col = layout.column(align=True)
-        col.operator("mesh.advanced_init_smooth_groups", icon="UV_DATA")
+        col.operator("tt.advanced_init_smooth_groups", icon="UV_DATA")
 
     @classmethod
     def poll(cls, context):

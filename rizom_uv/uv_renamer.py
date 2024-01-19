@@ -2,7 +2,7 @@ import bpy
 
 
 class UVrenamer(bpy.types.Operator):
-    bl_idname = "mesh.uv_replace_to_dots"
+    bl_idname = "tt.uv_replace_to_dots"
     bl_label = "Replace underscores to dots in UV names"
 
     def execute(self, context):

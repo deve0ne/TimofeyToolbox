@@ -3,7 +3,7 @@ import math
 
 
 class BoxMapping(bpy.types.Operator):
-    bl_idname = "mesh.box_mapping"
+    bl_idname = "tt.box_mapping"
     bl_label = "BoxMapping"
 
     created_objects = []

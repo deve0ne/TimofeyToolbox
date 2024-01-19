@@ -4,7 +4,7 @@ import os
 
 
 class FixMatNames(bpy.types.Operator):
-    bl_idname = "mesh.fix_mat_names"
+    bl_idname = "tt.fix_mat_names"
     bl_label = "Fix Mat Names"
     bl_description = "Remove weird postfixes from mat names"
     bl_options = {'UNDO'}

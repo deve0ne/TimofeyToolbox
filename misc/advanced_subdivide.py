@@ -3,7 +3,7 @@ import bmesh
 
 
 class AdvancedSubdivide(bpy.types.Operator):
-    bl_idname = "object.advanced_subdivide"
+    bl_idname = "tt.advanced_subdivide"
     bl_label = "Advanced Subdivide"
     name: bpy.props.StringProperty()
 
