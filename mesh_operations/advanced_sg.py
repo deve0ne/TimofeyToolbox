@@ -36,14 +36,11 @@ class TT_OT_advanced_sg(bpy.types.Operator):
 
             sg_bug_island = self.expand_sg_bug_poly(bm, sg_bug[0], sg_layer)
 
-            print(sg_bug_island)
-
             free_sg = self.find_free_sg(bm, sg_bug_island)
 
             self.reassign_island_sg(bm, sg_bug_island, free_sg)
 
             iterations += 1
-            # print("iter {}".format(i))
             if iterations > 1000:  # Защита от бесконечного цикла
                 print("limited")
                 break
@@ -99,14 +96,11 @@ class TT_OT_advanced_sg(bpy.types.Operator):
 
         while queue:
             current_face = queue.pop(0)
-            # print(f"Current face: {current_face.index}")
             for edge in current_face.edges:
                 for face in edge.link_faces:
-                    # print(f"face: {face.index} sg: {face[sg_layer]} another face: {current_face.index} sg: {current_face[sg_layer]}")
                     if face.index not in sg_bug_island and face[sg_layer] == sg_bug_face[sg_layer]:
                         sg_bug_island.add(face.index)
                         queue.append(face)
-                        # print(f"Adding face {face.index} to island")
 
         return sg_bug_island
 
@@ -139,7 +133,7 @@ class TT_OT_advanced_sg(bpy.types.Operator):
         bm.faces.ensure_lookup_table()
 
 
-class TT_PT_MeshSGPanel(bpy.types.Panel):
+class TT_PT_advanced_sg(bpy.types.Panel):
     bl_label = "Timofey Toolbox SG"
     bl_idname = "TT_PT_TT_SG_panel"
     bl_region_type = "UI"
@@ -157,7 +151,7 @@ class TT_PT_MeshSGPanel(bpy.types.Panel):
         return context.mode == "EDIT_MESH"
 
 
-classes = [TT_OT_advanced_sg, TT_PT_MeshSGPanel]
+classes = [TT_OT_advanced_sg, TT_PT_advanced_sg]
 
 
 def register():

@@ -11,7 +11,8 @@ bl_info = {
 }
 
 
-classes = [correct_uv_button, texture_optimization]
+classes = [correct_uv_button,
+           texture_optimization]
 
 
 ### Mesh checks

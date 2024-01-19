@@ -27,7 +27,6 @@ class TT_OT_advanced_subdivide(bpy.types.Operator):
         if isinstance(active_selection.active, bmesh.types.BMVert):
             # Subdivide the vertices
             selected_verts = [v for v in bm.verts if v.select]
-            print(len(selected_verts))
             edge = bm.edges.get(selected_verts)
 
         bmesh.ops.subdivide_edges(bm, edges=[edge], cuts=1)

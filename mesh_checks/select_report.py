@@ -8,14 +8,12 @@ from bpy.props import (
 )
 import bmesh
 
-from bpy.app.translations import pgettext_tip as tip_
-
 from . import report
 
 
 class TT_OT_select_report(Operator):
     bl_idname = "tt.select_report"
-    bl_label = "3D-Print Select Report"
+    bl_label = "Select Report"
     bl_description = "Select the data associated with this report"
     bl_options = {'INTERNAL'}
 

@@ -21,8 +21,8 @@ class TT_OT_fix_mat_names(bpy.types.Operator):
         for mat in mats:
             T = mat.dagormat.textures
             for tex in T.keys():
-                tex_name = re.sub('[%#$@!^&*]', '', T[tex]
-                                  )  # no extention needed
+                # no extention needed
+                tex_name = re.sub('[%#$@!^&*]', '', T[tex])
 
                 if T[tex] == '':
                     continue

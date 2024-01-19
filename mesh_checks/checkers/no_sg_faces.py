@@ -15,7 +15,6 @@ class TT_OT_find_no_sg_faces(bpy.types.Operator):
         no_sg_faces = []
 
         if "SG" in obj.data.attributes:
-            print("hasattr")
             attr = obj.data.attributes["SG"].data
 
             no_sg_faces = [index for index,
