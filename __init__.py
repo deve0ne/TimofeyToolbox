@@ -1,17 +1,21 @@
 from .misc import correct_uv_button, texture_optimization
 from .mesh_operations import mesh_operation_panel
+from . import addon_updater_ops
+from . import preferences_panel
 
 bl_info = {
     "name": "TimofeyToolbox",
     "author": "Deveone",
-    "version": (1, 3, 3),
+    "version": (1, 4, 0),
     "blender": (3, 5, 1),
     "location": "3D View > Sidebar",
+    "wiki_url": "https://github.com/deve0ne/TimofeyToolbox",
     "category": "Mesh"
 }
 
 
-classes = [correct_uv_button,
+classes = [preferences_panel,
+           correct_uv_button,
            texture_optimization]
 
 
@@ -44,12 +48,16 @@ classes.extend([mesh_operation_panel,
 
 
 def register():
+    addon_updater_ops.register(bl_info)
+
     for c in classes:
         c.register()
 
 
 def unregister():
-    for c in classes:
+    addon_updater_ops.unregister()
+
+    for c in reversed(classes):
         c.unregister()
 
 

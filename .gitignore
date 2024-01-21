@@ -1,3 +1,5 @@
 TimofeyToolbox.code-workspace
 .vscode
 *.pyc
+*backup*
+*_updater_status.json
