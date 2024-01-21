@@ -3,7 +3,7 @@ import bpy
 
 class TT_OT_uv_renamer(bpy.types.Operator):
     bl_idname = "tt.uv_replace_to_dots"
-    bl_label = "Replace underscores to dots in UV names"
+    bl_label = "Fix UV names"
 
     def execute(self, context):
         for obj in bpy.data.objects:
@@ -12,12 +12,13 @@ class TT_OT_uv_renamer(bpy.types.Operator):
                 for uv in uvs:
                     uv.name = uv.name.replace(".", "_")
             except:
-                return {"FINISHED"}
+                return {"ERROR"}
 
         return {"FINISHED"}
     
 
 classes = [TT_OT_uv_renamer]
+
 
 def register():
     for cls in classes:

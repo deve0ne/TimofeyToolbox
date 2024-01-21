@@ -3,7 +3,7 @@ import bpy
 # Updater ops import, all setup in this file.
 from . import addon_updater_ops
 
-class UpdaterPanel(bpy.types.Panel):
+class TT_PT_updater(bpy.types.Panel):
 	bl_label = "TimofeyToolbox Updater Panel"
 	bl_idname = "TT_PT_updater"
 	bl_space_type = 'VIEW_3D'
@@ -39,7 +39,7 @@ class UpdaterPanel(bpy.types.Panel):
 
 
 @addon_updater_ops.make_annotations
-class DemoPreferences(bpy.types.AddonPreferences):
+class TT_preferences(bpy.types.AddonPreferences):
 	bl_idname = __package__
 
 	# Addon updater preferences.
@@ -100,8 +100,8 @@ class DemoPreferences(bpy.types.AddonPreferences):
 
 
 classes = [
-	DemoPreferences,
-	UpdaterPanel
+	TT_preferences,
+	TT_PT_updater
 ]
 
 def register():
