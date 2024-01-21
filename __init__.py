@@ -1,8 +1,3 @@
-from .misc import correct_uv_button, texture_optimization
-from .mesh_operations import mesh_operation_panel
-from . import addon_updater_ops
-from . import preferences_panel
-
 bl_info = {
     "name": "TimofeyToolbox",
     "author": "Deveone",
@@ -14,9 +9,7 @@ bl_info = {
 }
 
 
-classes = [preferences_panel,
-           correct_uv_button,
-           texture_optimization]
+classes = []
 
 
 ### Mesh checks
@@ -46,6 +39,15 @@ classes.extend([mesh_operation_panel,
                 box_mapping,
                 advanced_sg])
 
+
+### Misc
+from .misc import correct_uv_button, texture_optimization
+from . import addon_updater_ops
+from . import preferences_panel
+
+classes.extend([preferences_panel,
+           correct_uv_button,
+           texture_optimization])
 
 def register():
     addon_updater_ops.register(bl_info)
