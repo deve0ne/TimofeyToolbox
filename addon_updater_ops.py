@@ -981,16 +981,16 @@ def update_settings_ui(self, context, element=None):
     sub_col.prop(settings, "auto_check_update")
     sub_col = split.column()
 
-    if not settings.auto_check_update:
-        sub_col.enabled = False
-    sub_row = sub_col.row()
-    sub_row.label(text="Interval between checks")
-    sub_row = sub_col.row(align=True)
-    check_col = sub_row.column(align=True)
-    check_col.prop(settings, "updater_interval_months")
-    check_col = sub_row.column(align=True)
-    check_col.prop(settings, "updater_interval_days")
-    check_col = sub_row.column(align=True)
+    # if not settings.auto_check_update:
+    #     sub_col.enabled = False
+    # sub_row = sub_col.row()
+    # sub_row.label(text="Interval between checks")
+    # sub_row = sub_col.row(align=True)
+    # check_col = sub_row.column(align=True)
+    # check_col.prop(settings, "updater_interval_months")
+    # check_col = sub_row.column(align=True)
+    # check_col.prop(settings, "updater_interval_days")
+    # check_col = sub_row.column(align=True)
 
     # Consider un-commenting for local dev (e.g. to set shorter intervals)
     # check_col.prop(settings,"updater_interval_hours")
@@ -1374,11 +1374,11 @@ def register(bl_info):
 
     # Optional, to hard-set update frequency, use this here - however, this
     # demo has this set via UI properties.
-    # updater.set_check_interval(enabled=False, months=0, days=0, hours=0, minutes=2)
+    updater.set_check_interval(enabled=False, months=0, days=7, hours=0, minutes=0)
 
     # Optional, consider turning off for production or allow as an option
     # This will print out additional debugging info to the console
-    updater.verbose = True  # make False for production default
+    updater.verbose = False  # make False for production default
 
     # Optional, customize where the addon updater processing subfolder is,
     # essentially a staging folder used by the updater on its own
@@ -1388,7 +1388,7 @@ def register(bl_info):
     # 			/addons/{__package__}/{__package__}_updater
 
     # Auto create a backup of the addon when installing other versions.
-    updater.backup_current = True  # True by default
+    updater.backup_current = False  # True by default
 
     # Sample ignore patterns for when creating backup of current during update.
     updater.backup_ignore_patterns = ["__pycache__"]
@@ -1460,7 +1460,7 @@ def register(bl_info):
     # Note: updater.include_branch_list defaults to ['master'] branch if set to
     # none. Example targeting another multiple branches allowed to pull from:
     # updater.include_branch_list = ['master', 'dev']
-    updater.include_branch_list = None  # None is the equivalent = ['master']
+    updater.include_branch_list = ['master', 'develop']  # None is the equivalent = ['master']
 
     # Only allow manual install, thus prompting the user to open
     # the addon's web page to download, specifically: updater.website

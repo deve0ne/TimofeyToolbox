@@ -4,12 +4,11 @@ import bpy
 from . import addon_updater_ops
 
 class UpdaterPanel(bpy.types.Panel):
-	bl_label = "Updater Panel"
-	bl_idname = "OBJECT_PT_updater"
+	bl_label = "TimofeyToolbox Updater Panel"
+	bl_idname = "TT_PT_updater"
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'TOOLS'
 	bl_context = "objectmode"
-	# bl_category = "Tools"
 
 	def draw(self, context):
 		layout = self.layout
@@ -35,21 +34,20 @@ class UpdaterPanel(bpy.types.Panel):
 			layout.label(text="TimofeyToolbox ready to update", icon="INFO")
 		layout.label(text="")
 
-		# Call built-in function with draw code/checks.
+		# Call built-in function with sdraw code/checks.
 		addon_updater_ops.update_notice_box_ui(self, context)
 
 
 @addon_updater_ops.make_annotations
 class DemoPreferences(bpy.types.AddonPreferences):
-	"""Demo bare-bones preferences"""
 	bl_idname = __package__
 
 	# Addon updater preferences.
 
 	auto_check_update = bpy.props.BoolProperty(
 		name="Auto-check for Update",
-		description="If enabled, auto-check for updates using an interval",
-		default=False)
+		description="If enabled, auto-check for updates",
+		default=True)
 
 	updater_interval_months = bpy.props.IntProperty(
 		name='Months',
@@ -60,7 +58,7 @@ class DemoPreferences(bpy.types.AddonPreferences):
 	updater_interval_days = bpy.props.IntProperty(
 		name='Days',
 		description="Number of days between checking for updates",
-		default=7,
+		default=1,
 		min=0,
 		max=31)
 
