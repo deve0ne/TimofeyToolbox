@@ -4,6 +4,7 @@ import bpy
 class TT_OT_uv_renamer(bpy.types.Operator):
     bl_idname = "tt.uv_replace_to_dots"
     bl_label = "Fix UV names"
+    bl_options = {"UNDO"}
 
     def execute(self, context):
         for obj in bpy.data.objects:

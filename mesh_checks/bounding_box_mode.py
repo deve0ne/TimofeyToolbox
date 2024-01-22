@@ -4,6 +4,7 @@ class TT_OT_bounding_box_mode(bpy.types.Operator):
     bl_idname = "tt.bounding_box_mode"
     bl_label = "Show/Hide Bounding Box"
     bl_description = "Enables/Disables Bounding Box on selected objects"
+    bl_options = {"UNDO"}
     
     @classmethod
     def poll(cls, context):
