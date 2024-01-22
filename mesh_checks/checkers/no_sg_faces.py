@@ -17,14 +17,17 @@ class TT_OT_find_no_sg_faces(bpy.types.Operator):
         
         no_sg_faces = []
         
-        for face in bm.faces:
-            try:
-                # Try to access the SG attribute. If the attribute is missing, an exception will be raised.
-                if face[sg_layer] == 0:
+        if sg_layer is not None:
+            for face in bm.faces:
+                try:
+                    # Try to access the SG attribute. If the attribute is missing, an exception will be raised.
+                    if face[sg_layer] == 0:
+                        no_sg_faces.append(face.index)
+                except KeyError:
+                    # The SG attribute is missing for this face, so we add it to the list.
                     no_sg_faces.append(face.index)
-            except KeyError:
-                # The SG attribute is missing for this face, so we add it to the list.
-                no_sg_faces.append(face.index)
+        else:
+            no_sg_faces = [face.index for face in bm.faces]
         
         
         info.append(

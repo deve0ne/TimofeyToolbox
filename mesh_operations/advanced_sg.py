@@ -144,7 +144,7 @@ class TT_PT_advanced_sg(bpy.types.Panel):
         layout = self.layout
         col = layout.column(align=True)
         col.operator("tt.advanced_init_smooth_groups")
-        col.operator("tt.find_no_sg_faces")
+        # col.operator("tt.find_no_sg_faces")
 
     @classmethod
     def poll(cls, context):
