@@ -36,7 +36,9 @@
 ## Correct UV                                                                         
 ![Advanced SG](https://drive.google.com/uc?export=view&id=1OvQIaw-9iKMMr0-nCsOGnuuwajTf1YcQ)     
 
-Дублирует эту галочку для удобства:                
+Дублирует галочку "Correct Face Attributes" для удобства:                
 
 ![Advanced SG](https://drive.google.com/uc?export=view&id=12uXMdkAGoxYfcQWji_j2nPoF2pChfprH)
+
+Не забудьте поставить Keep Connected вручную, чтобы развёртка не разрезалась при передвижении полигонов.
   
