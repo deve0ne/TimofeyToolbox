@@ -5,6 +5,7 @@ import bmesh
 class TT_OT_advanced_subdivide(bpy.types.Operator):
     bl_idname = "tt.advanced_subdivide"
     bl_label = "Advanced Subdivide"
+    bl_options = {"UNDO"}
     name: bpy.props.StringProperty()
 
     def execute(self, context):

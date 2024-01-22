@@ -6,7 +6,6 @@ from .. import mesh_check_helpers
 class TT_OT_find_no_sg_faces(bpy.types.Operator):
     bl_idname = "tt.find_no_sg_faces"
     bl_label = "No SG Faces"
-    bl_options = {"UNDO"}
 
     @staticmethod
     def main_check(obj, info):

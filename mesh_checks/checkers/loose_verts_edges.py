@@ -6,7 +6,6 @@ from .. import mesh_check_helpers
 class TT_OT_find_loose_verts_edges(bpy.types.Operator):
     bl_idname = "tt.find_loose_verts_edges"
     bl_label = "Loose Verts & Edges"
-    bl_options = {"REGISTER", "UNDO"}
 
     @staticmethod
     def main_check(obj, info):
