@@ -1,7 +1,9 @@
 #Временная документация
 
 ## Основное окно
-![[Pasted image 20240122155206.png]]
+
+![Окно](https://drive.google.com/uc?export=view&id=1oxIbhrhKSdP66WTD3WUh3ueDgc5m9aSB)
+
 ### Mesh Check
 В object mode показывает результаты проверки, в edit mode эти результаты становятся доступными для выбора.
 Имейте в виду, что на данный момент проверять можно только один меш одновременно, при нескольких выбранных мешах будет проверен последний из них.
@@ -24,12 +26,12 @@
 
 ## Прочие функции
 ### Advanced smoothing groups
-Находится во вкладке Dagor, под smoothing группами.
-![[Pasted image 20240122161013.png]]
-* Advanced Recalculate SG - выполняет стандартный дагоровский Recalculate (то есть просчитывает группы сглаживания по хардам), после чего находит баги пересечения групп и переназначает их. Обычно немного увеличивает количество занятых smoothing групп. Полностью не протестировано, использовать с осторожностью.
-  ![[Pasted image 20240122162418.png]]![[Pasted image 20240122162456.png]]
-  ## Correct UV
- ![[Pasted image 20240122162845.png]]
- Дублирует эту галочку для удобства:
- ![[Pasted image 20240122162939.png]]
+Находится во вкладке Dagor, под smoothing группами.                                  
+![Advanced SG](https://drive.google.com/uc?export=view&id=1JQC4LbiKQEZ2jnAqflC4jj5Ta4mfIos0)
+* Advanced Recalculate SG - выполняет стандартный дагоровский Recalculate (то есть просчитывает группы сглаживания по хардам), после чего находит баги пересечения групп и переназначает их. Обычно немного увеличивает количество занятых smoothing групп. Полностью не протестировано, использовать с осторожностью.                    
+![Принцип](https://drive.google.com/uc?export=view&id=1mpfsM43Umt6E86EIBnnLiigoUCRPHsva)
+## Correct UV                                                                         
+![Advanced SG](https://drive.google.com/uc?export=view&id=1OvQIaw-9iKMMr0-nCsOGnuuwajTf1YcQ)                                              
+Дублирует эту галочку для удобства:                                                                      
+![Advanced SG](https://drive.google.com/uc?export=view&id=12uXMdkAGoxYfcQWji_j2nPoF2pChfprH)
   
