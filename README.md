@@ -1,4 +1,4 @@
-#Временная документация
+# Временная документация
 
 ## Основное окно
 
@@ -27,11 +27,16 @@
 ## Прочие функции
 ### Advanced smoothing groups
 Находится во вкладке Dagor, под smoothing группами.                                  
+
 ![Advanced SG](https://drive.google.com/uc?export=view&id=1JQC4LbiKQEZ2jnAqflC4jj5Ta4mfIos0)
-* Advanced Recalculate SG - выполняет стандартный дагоровский Recalculate (то есть просчитывает группы сглаживания по хардам), после чего находит баги пересечения групп и переназначает их. Обычно немного увеличивает количество занятых smoothing групп. Полностью не протестировано, использовать с осторожностью.                    
+
+* Advanced Recalculate SG - выполняет стандартный дагоровский Recalculate (то есть просчитывает группы сглаживания по хардам), после чего находит баги пересечения групп и переназначает их. Обычно немного увеличивает количество занятых smoothing групп. Полностью не протестировано, использовать с осторожностью.
+
 ![Принцип](https://drive.google.com/uc?export=view&id=1mpfsM43Umt6E86EIBnnLiigoUCRPHsva)
 ## Correct UV                                                                         
-![Advanced SG](https://drive.google.com/uc?export=view&id=1OvQIaw-9iKMMr0-nCsOGnuuwajTf1YcQ)                                              
-Дублирует эту галочку для удобства:                                                                      
+![Advanced SG](https://drive.google.com/uc?export=view&id=1OvQIaw-9iKMMr0-nCsOGnuuwajTf1YcQ)     
+
+Дублирует эту галочку для удобства:                
+
 ![Advanced SG](https://drive.google.com/uc?export=view&id=12uXMdkAGoxYfcQWji_j2nPoF2pChfprH)
   
