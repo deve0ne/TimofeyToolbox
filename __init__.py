@@ -1,7 +1,7 @@
 bl_info = {
     "name": "TimofeyToolbox",
     "author": "Deveone",
-    "version": (1, 4, 1),
+    "version": (1, 4, 2),
     "blender": (3, 5, 1),
     "location": "3D View > Sidebar",
     "wiki_url": "https://github.com/deve0ne/TimofeyToolbox",
