@@ -5,7 +5,7 @@ from .. import mesh_check_helpers
 
 class TT_OT_find_loose_verts_edges(bpy.types.Operator):
     bl_idname = "tt.find_loose_verts_edges"
-    bl_label = "Find Loose Vertices and Edges"
+    bl_label = "Loose Verts & Edges"
     bl_options = {"REGISTER", "UNDO"}
 
     @staticmethod

@@ -6,7 +6,7 @@ from .. import mesh_check_helpers
 
 class TT_OT_check_manifold(Operator):
     bl_idname = "tt.check_manifold"
-    bl_label = "Check Manifold"
+    bl_label = "Manifold"
     bl_description = "Check for geometry is solid (has valid inside/outside) and correct normals"
 
     @staticmethod

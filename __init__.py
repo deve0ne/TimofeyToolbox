@@ -1,7 +1,7 @@
 bl_info = {
     "name": "TimofeyToolbox",
     "author": "Deveone",
-    "version": (1, 4, 2),
+    "version": (1, 4, 3),
     "blender": (3, 5, 1),
     "location": "3D View > Sidebar",
     "wiki_url": "https://github.com/deve0ne/TimofeyToolbox",
@@ -14,7 +14,7 @@ classes = []
 
 ### Mesh checks
 
-from .mesh_checks import mesh_check_panel
+from .mesh_checks import mesh_check_panel, bounding_box_mode
 from .mesh_checks.checkers import incorrect_geometry, loose_verts_edges, no_sg_faces, degenerates, manifold, check_all
 
 classes.extend([mesh_check_panel,
@@ -23,7 +23,8 @@ classes.extend([mesh_check_panel,
                 incorrect_geometry,
                 degenerates,
                 manifold,
-                check_all])
+                check_all,
+                bounding_box_mode])
 
 ### Mesh operations
 

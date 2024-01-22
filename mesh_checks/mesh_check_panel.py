@@ -43,16 +43,23 @@ class TT_PT_mesh_check(bpy.types.Panel):
         layout = self.layout
 
         layout.label(text="Checks")
+        
         col = layout.column(align=True)
-        col.operator("tt.find_no_sg_faces", text="No SG faces")
-        col.operator("tt.find_loose_verts_edges", text="Loose Verts & Edges")
-        col.operator("tt.find_incorrect_geometry", text="Incorrect Geometry")
-        col.operator("tt.find_degenerates", text="Degenerates")
-        col.operator("tt.check_manifold", text="Manifold")
+        col.operator("tt.find_no_sg_faces")
+        col.operator("tt.find_loose_verts_edges")
+        col.operator("tt.find_incorrect_geometry")
+        col.operator("tt.find_degenerates")
+        col.operator("tt.check_manifold")
 
-        layout.operator("tt.check_all", text="Check All")
+        layout.operator("tt.check_all")
 
         self.draw_report(context)
+    
+        layout.separator()
+        
+        layout.label(text="Viewer modes")
+        
+        layout.operator("tt.bounding_box_mode")
 
 
 classes = [TT_PT_mesh_check, TT_OT_select_report]

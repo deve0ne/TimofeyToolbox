@@ -5,7 +5,7 @@ from .. import mesh_check_helpers
 
 class TT_OT_find_incorrect_geometry(bpy.types.Operator):
     bl_idname = "tt.find_incorrect_geometry"
-    bl_label = "Find incorrect geometry"
+    bl_label = "Incorrect Geometry"
     bl_options = {"REGISTER", "UNDO"}
 
     @staticmethod

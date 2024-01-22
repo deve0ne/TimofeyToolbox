@@ -5,7 +5,7 @@ from .. import mesh_check_helpers
 
 class TT_OT_find_degenerates(bpy.types.Operator):
     bl_idname = "tt.find_degenerates"
-    bl_label = "Find Degenerates"
+    bl_label = "Degenerates"
     bl_options = {"REGISTER", "UNDO"}
 
     @staticmethod

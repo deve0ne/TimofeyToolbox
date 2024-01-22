@@ -47,7 +47,7 @@ class TT_preferences(bpy.types.AddonPreferences):
 	auto_check_update = bpy.props.BoolProperty(
 		name="Auto-check for Update",
 		description="If enabled, auto-check for updates",
-		default=True)
+		default=False)
 
 	updater_interval_months = bpy.props.IntProperty(
 		name='Months',
@@ -101,7 +101,7 @@ class TT_preferences(bpy.types.AddonPreferences):
 
 classes = [
 	TT_preferences,
-	TT_PT_updater
+	# TT_PT_updater
 ]
 
 def register():

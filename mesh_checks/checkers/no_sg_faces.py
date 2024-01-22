@@ -5,7 +5,7 @@ from .. import mesh_check_helpers
 
 class TT_OT_find_no_sg_faces(bpy.types.Operator):
     bl_idname = "tt.find_no_sg_faces"
-    bl_label = "Check Smoothing groups"
+    bl_label = "No SG Faces"
     bl_options = {"UNDO"}
 
     @staticmethod
