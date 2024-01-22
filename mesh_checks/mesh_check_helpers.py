@@ -18,7 +18,7 @@ def bmesh_copy_from_object(obj, transform=True, triangulate=True, apply_modifier
     """Returns a transformed, triangulated copy of the mesh"""
 
     assert obj.type == 'MESH'
-
+    
     if apply_modifiers and obj.modifiers:
         import bpy
         depsgraph = bpy.context.evaluated_depsgraph_get()

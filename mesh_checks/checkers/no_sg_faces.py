@@ -12,17 +12,21 @@ class TT_OT_find_no_sg_faces(bpy.types.Operator):
     def main_check(obj, info):
         bm = mesh_check_helpers.bmesh_copy_from_object(
             obj, transform=False, triangulate=False)
+        
+        sg_layer = bm.faces.layers.int.get("SG")
+        
         no_sg_faces = []
-
-        if "SG" in obj.data.attributes:
-            attr = obj.data.attributes["SG"].data
-
-            no_sg_faces = [index for index,
-                           face in enumerate(attr) if face.value == 0]
-        else:
-            # Костыль, но иное придумывать лень
-            no_sg_faces = [face.index for face in bm.faces]
-
+        
+        for face in bm.faces:
+            try:
+                # Try to access the SG attribute. If the attribute is missing, an exception will be raised.
+                if face[sg_layer] == 0:
+                    no_sg_faces.append(face.index)
+            except KeyError:
+                # The SG attribute is missing for this face, so we add it to the list.
+                no_sg_faces.append(face.index)
+        
+        
         info.append(
             (("No SG faces: {}").format(
                 len(no_sg_faces)),

@@ -1094,8 +1094,8 @@ def update_settings_ui(self, context, element=None):
                 last_date = "Date not found"
             else:
                 last_date = updater.json["backup_date"]
-        backup_text = "Restore addon backup ({})".format(last_date)
-        col.operator(AddonUpdaterRestoreBackup.bl_idname, text=backup_text)
+        # backup_text = "Restore addon backup ({})".format(last_date)
+        # col.operator(AddonUpdaterRestoreBackup.bl_idname, text=backup_text)
 
     row = box.row()
     row.scale_y = 0.7

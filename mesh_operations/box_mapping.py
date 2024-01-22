@@ -4,7 +4,7 @@ import math
 
 class TT_OT_box_mapping(bpy.types.Operator):
     bl_idname = "tt.box_mapping"
-    bl_label = "BoxMapping"
+    bl_label = "Box Mapping"
 
     created_objects = []
 
