@@ -5,7 +5,7 @@ from .loose_verts_edges import TT_OT_find_loose_verts_edges
 from .no_sg_faces import TT_OT_find_no_sg_faces
 from .degenerates import TT_OT_find_degenerates
 from .manifold import TT_OT_check_manifold
-from .. import report
+from ...helpers import report
 from ..mesh_check_helpers import multiple_obj_warning
 
 

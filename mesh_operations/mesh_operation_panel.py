@@ -17,6 +17,7 @@ class TT_PT_mesh_operations(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         col = layout.column(align=True)
+        col.operator("tt.dissolve_degenerates")
         col.operator("tt.uv_replace_to_dots")
         col.operator("tt.box_mapping")
         # col.operator("tt.fix_mat_names")

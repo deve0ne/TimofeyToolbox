@@ -1,7 +1,7 @@
 import bpy
-from . import report
 from bmesh import types
-from .select_report import TT_OT_select_report
+from ..helpers import report
+from ..helpers.select_report import TT_OT_select_report
 
 
 class TT_PT_mesh_check(bpy.types.Panel):

@@ -1,4 +1,4 @@
-from . import report
+from ..helpers import report
 import bmesh
 
 
@@ -16,7 +16,7 @@ def execute_check(self, context):
 
 def bmesh_copy_from_object(obj, transform=True, triangulate=True, apply_modifiers=False):
     """Returns a transformed, triangulated copy of the mesh"""
-
+    
     assert obj.type == 'MESH'
 
     if apply_modifiers and obj.modifiers:
