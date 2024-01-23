@@ -43,7 +43,7 @@ class TT_PT_mesh_check(bpy.types.Panel):
         layout = self.layout
 
         layout.label(text="Checks")
-        
+
         col = layout.column(align=True)
         col.operator("tt.find_no_sg_faces")
         col.operator("tt.find_loose_verts_edges")
@@ -54,11 +54,11 @@ class TT_PT_mesh_check(bpy.types.Panel):
         layout.operator("tt.check_all")
 
         self.draw_report(context)
-    
+
         layout.separator()
-        
+
         layout.label(text="Viewer modes")
-        
+
         layout.operator("tt.bounding_box_mode")
 
 

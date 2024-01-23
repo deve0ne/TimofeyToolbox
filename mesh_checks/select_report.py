@@ -1,12 +1,7 @@
-import math
-
 import bpy
-from bpy.types import Operator
-from bpy.props import (
-    IntProperty,
-    FloatProperty,
-)
 import bmesh
+from bpy.types import Operator
+from bpy.props import IntProperty
 
 from . import report
 

@@ -7,15 +7,15 @@ class TT_OT_uv_renamer(bpy.types.Operator):
     bl_options = {"UNDO"}
 
     def execute(self, context):
-            
+
         user_mode = bpy.context.object.mode
         if user_mode != "OBJECT":
             bpy.ops.object.mode_set(mode="OBJECT")
-        
+
         for obj in bpy.data.objects:
             if obj.type != 'MESH':
                 continue
-            
+
             if obj.data.uv_layers:
                 uvs = obj.data.uv_layers
                 for uv in uvs:
@@ -23,7 +23,7 @@ class TT_OT_uv_renamer(bpy.types.Operator):
 
         bpy.ops.object.mode_set(mode=user_mode)
         return {"FINISHED"}
-    
+
 
 classes = [TT_OT_uv_renamer]
 
