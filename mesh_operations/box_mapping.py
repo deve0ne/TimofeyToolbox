@@ -62,7 +62,7 @@ class TT_OT_box_mapping(bpy.types.Operator):
         user_mode = bpy.context.object.mode
         if user_mode != "OBJECT":
             bpy.ops.object.mode_set(mode="OBJECT")
-                
+
         self.created_objects = []
 
         if bpy.context.selected_objects:
@@ -111,13 +111,13 @@ class TT_OT_box_mapping(bpy.types.Operator):
 
             for i in range(6):
                 uv_project_modifier.projectors[i].object = self.created_objects[i]
-        
+
         bpy.ops.object.select_all(action="DESELECT")
         for obj in user_selected_objects:
             obj.select_set(True)
-        
+
         bpy.context.view_layer.objects.active = user_selected_objects[0]
-        
+
         bpy.ops.object.mode_set(mode=user_mode)
 
         return {"FINISHED"}

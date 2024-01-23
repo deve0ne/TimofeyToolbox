@@ -1,5 +1,6 @@
 import bpy
-                
+
+
 class TT_PT_mesh_operations(bpy.types.Panel):
     bl_label = "Mesh Operations"
     bl_idname = "TT_PT_mesh_operation"
@@ -7,7 +8,7 @@ class TT_PT_mesh_operations(bpy.types.Panel):
     bl_region_type = "UI"
     bl_options = {"HEADER_LAYOUT_EXPAND"}
     bl_category = "TimofeyToolbox"
-    
+
     @classmethod
     def poll(cls, context):
         obj = context.active_object
@@ -20,6 +21,7 @@ class TT_PT_mesh_operations(bpy.types.Panel):
         col.operator("tt.box_mapping")
         # col.operator("tt.fix_mat_names")
 
+
 classes = [TT_PT_mesh_operations]
 
 
@@ -31,4 +33,3 @@ def register():
 def unregister():
     for cls in classes:
         bpy.utils.unregister_class(cls)
-

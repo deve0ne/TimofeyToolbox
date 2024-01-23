@@ -11,11 +11,11 @@ class TT_OT_find_no_sg_faces(bpy.types.Operator):
     def main_check(obj, info):
         bm = mesh_check_helpers.bmesh_copy_from_object(
             obj, transform=False, triangulate=False)
-        
+
         sg_layer = bm.faces.layers.int.get("SG")
-        
+
         no_sg_faces = []
-        
+
         if sg_layer is not None:
             for face in bm.faces:
                 try:
@@ -27,8 +27,7 @@ class TT_OT_find_no_sg_faces(bpy.types.Operator):
                     no_sg_faces.append(face.index)
         else:
             no_sg_faces = [face.index for face in bm.faces]
-        
-        
+
         info.append(
             (("No SG faces: {}").format(
                 len(no_sg_faces)),

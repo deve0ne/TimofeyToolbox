@@ -40,9 +40,11 @@ class TT_OT_fix_mat_names(bpy.types.Operator):
                 T[tex] = tex_name
 
         return {'FINISHED'}
-    
+
+
 classes = [TT_OT_fix_mat_names]
-    
+
+
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)

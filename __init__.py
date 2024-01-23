@@ -1,3 +1,13 @@
+from .rizom_uv import uv_renamer
+from . import preferences_panel
+from . import addon_updater_ops
+from .misc import correct_uv_button, texture_optimization
+from .mesh_operations import fix_mat_names
+from .mesh_operations import box_mapping
+from .mesh_operations import advanced_sg
+from .mesh_operations import mesh_operation_panel
+from .mesh_checks.checkers import incorrect_geometry, loose_verts_edges, no_sg_faces, degenerates, manifold, check_all
+from .mesh_checks import mesh_check_panel, bounding_box_mode
 bl_info = {
     "name": "TimofeyToolbox",
     "author": "Deveone",
@@ -12,10 +22,8 @@ bl_info = {
 classes = []
 
 
-### Mesh checks
+# Mesh checks
 
-from .mesh_checks import mesh_check_panel, bounding_box_mode
-from .mesh_checks.checkers import incorrect_geometry, loose_verts_edges, no_sg_faces, degenerates, manifold, check_all
 
 classes.extend([mesh_check_panel,
                 no_sg_faces,
@@ -26,13 +34,8 @@ classes.extend([mesh_check_panel,
                 check_all,
                 bounding_box_mode])
 
-### Mesh operations
+# Mesh operations
 
-from .mesh_operations import mesh_operation_panel
-from .mesh_operations import advanced_sg
-from .mesh_operations import box_mapping
-from .mesh_operations import fix_mat_names
-from .rizom_uv import uv_renamer 
 
 classes.extend([mesh_operation_panel,
                 uv_renamer,
@@ -41,14 +44,12 @@ classes.extend([mesh_operation_panel,
                 advanced_sg])
 
 
-### Misc
-from .misc import correct_uv_button, texture_optimization
-from . import addon_updater_ops
-from . import preferences_panel
+# Misc
 
 classes.extend([preferences_panel,
-           correct_uv_button,
-           texture_optimization])
+                correct_uv_button,
+                texture_optimization])
+
 
 def register():
     addon_updater_ops.register(bl_info)
