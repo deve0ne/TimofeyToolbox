@@ -6,13 +6,13 @@ from .no_sg_faces import TT_OT_find_no_sg_faces
 from .degenerates import TT_OT_find_degenerates
 from .manifold import TT_OT_check_manifold
 from ...helpers import report
-from ..mesh_check_helpers import multiple_obj_warning
+from ...helpers.mesh_helpers import multiple_obj_warning
 
 
 class TT_Check_All(Operator):
     bl_idname = "tt.check_all"
     bl_label = "Check All"
-    bl_description = "Run all checks"
+    bl_description = "Run all mesh checks"
 
     check_cls = (
         TT_OT_find_no_sg_faces,

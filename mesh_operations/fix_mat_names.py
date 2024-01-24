@@ -3,10 +3,10 @@ import re
 import os
 
 
-class TT_OT_fix_mat_names(bpy.types.Operator):
-    bl_idname = "tt.fix_mat_names"
-    bl_label = "Fix Mat Names"
-    bl_description = "Remove weird postfixes from mat names"
+class TT_OT_fix_mat_paths(bpy.types.Operator):
+    bl_idname = "tt.fix_mat_paths"
+    bl_label = "Fix Mat Path's"
+    bl_description = "Remove weird postfixes from dagormat texture path's"
     bl_options = {'UNDO'}
 
     def execute(self, context):
@@ -42,7 +42,7 @@ class TT_OT_fix_mat_names(bpy.types.Operator):
         return {'FINISHED'}
 
 
-classes = [TT_OT_fix_mat_names]
+classes = [TT_OT_fix_mat_paths]
 
 
 def register():

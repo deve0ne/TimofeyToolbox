@@ -1,15 +1,16 @@
 import bpy
 import bmesh
-from .. import mesh_check_helpers
+from ...helpers import mesh_helpers
 
 
 class TT_OT_find_no_sg_faces(bpy.types.Operator):
     bl_idname = "tt.find_no_sg_faces"
     bl_label = "No SG Faces"
+    bl_description = "Finds faces without assigned SG"
 
     @staticmethod
     def main_check(obj, info):
-        bm = mesh_check_helpers.bmesh_copy_from_object(
+        bm = mesh_helpers.bmesh_copy_from_object(
             obj, transform=False, triangulate=False)
 
         sg_layer = bm.faces.layers.int.get("SG")
@@ -37,7 +38,7 @@ class TT_OT_find_no_sg_faces(bpy.types.Operator):
         bm.free()
 
     def execute(self, context):
-        return mesh_check_helpers.execute_check(self, context)
+        return mesh_helpers.execute_check(self, context)
 
 
 class TT_OT_SelectNoSGfaces(bpy.types.Operator):

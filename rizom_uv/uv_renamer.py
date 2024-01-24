@@ -4,6 +4,7 @@ import bpy
 class TT_OT_uv_renamer(bpy.types.Operator):
     bl_idname = "tt.uv_replace_to_dots"
     bl_label = "Fix UV names"
+    bl_description = "Replaces dots to underscores in all UV names on scene for RizomUV support"
     bl_options = {"UNDO"}
 
     def execute(self, context):

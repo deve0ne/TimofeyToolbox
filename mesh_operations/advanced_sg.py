@@ -5,8 +5,13 @@ import bmesh
 class TT_OT_advanced_sg(bpy.types.Operator):
     bl_idname = "tt.advanced_init_smooth_groups"
     bl_label = "Advanced Recalculate SG"
-    bl_description = "Initialize smoothing groups"
+    bl_description = "Recalculates Smoothing Groups from Hard Edges and fixes normal bugs"
     bl_options = {"UNDO"}
+    
+    @classmethod
+    def poll(cls, context):
+        obj = context.active_object
+        return obj is not None and obj.type == 'MESH' and (obj.mode in {'EDIT'})
 
     def execute(self, context):
         bpy.ops.dt.init_smooth_group()  # init default sg algorithm

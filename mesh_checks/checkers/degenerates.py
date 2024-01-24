@@ -1,15 +1,16 @@
 import bpy
 import bmesh
-from .. import mesh_check_helpers
+from ...helpers import mesh_helpers
 
 
 class TT_OT_find_degenerates(bpy.types.Operator):
     bl_idname = "tt.find_degenerates"
     bl_label = "Degenerates"
+    bl_description = "Finds degenerate faces and edges"
 
     @staticmethod
     def main_check(obj, info):
-        bm = mesh_check_helpers.bmesh_copy_from_object(
+        bm = mesh_helpers.bmesh_copy_from_object(
             obj, transform=False, triangulate=False)
 
         # It's difficult to track which elements were removed, so we create a custom layers
@@ -42,7 +43,7 @@ class TT_OT_find_degenerates(bpy.types.Operator):
         bm.free()
 
     def execute(self, context):
-        return mesh_check_helpers.execute_check(self, context)
+        return mesh_helpers.execute_check(self, context)
 
 
 classes = [TT_OT_find_degenerates]

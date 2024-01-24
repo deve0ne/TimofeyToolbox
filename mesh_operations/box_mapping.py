@@ -5,6 +5,7 @@ import math
 class TT_OT_box_mapping(bpy.types.Operator):
     bl_idname = "tt.box_mapping"
     bl_label = "Box Mapping"
+    bl_description = "Box mapping (2x2x2) modifier with the box center at the origin"
     bl_options = {"UNDO"}
 
     created_objects = []

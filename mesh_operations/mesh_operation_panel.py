@@ -20,7 +20,7 @@ class TT_PT_mesh_operations(bpy.types.Panel):
         col.operator("tt.dissolve_degenerates")
         col.operator("tt.uv_replace_to_dots")
         col.operator("tt.box_mapping")
-        # col.operator("tt.fix_mat_names")
+        # col.operator("tt.fix_mat_paths")
 
 
 classes = [TT_PT_mesh_operations]

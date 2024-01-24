@@ -1,15 +1,16 @@
 import bpy
 import bmesh
-from .. import mesh_check_helpers
+from ...helpers import mesh_helpers
 
 
 class TT_OT_find_loose_verts_edges(bpy.types.Operator):
     bl_idname = "tt.find_loose_verts_edges"
     bl_label = "Loose Verts & Edges"
+    bl_description = "Finds verts without linked edges and edges without linked faces"
 
     @staticmethod
     def main_check(obj, info):
-        bm = mesh_check_helpers.bmesh_copy_from_object(
+        bm = mesh_helpers.bmesh_copy_from_object(
             obj, transform=False, triangulate=False)
 
         # Finding loose vertices and edges
@@ -32,7 +33,7 @@ class TT_OT_find_loose_verts_edges(bpy.types.Operator):
         bm.free()
 
     def execute(self, context):
-        return mesh_check_helpers.execute_check(self, context)
+        return mesh_helpers.execute_check(self, context)
 
 
 classes = [TT_OT_find_loose_verts_edges]

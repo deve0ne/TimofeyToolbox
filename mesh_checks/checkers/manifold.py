@@ -1,19 +1,19 @@
 import bpy
 from bpy.types import Operator
 import bmesh
-from .. import mesh_check_helpers
+from ...helpers import mesh_helpers
 
 
 class TT_OT_check_manifold(Operator):
     bl_idname = "tt.check_manifold"
     bl_label = "Manifold"
-    bl_description = "Check for geometry is solid (has valid inside/outside) and correct normals"
+    bl_description = "Check for geometry is solid. Useful for phys collisions"
 
     @staticmethod
     def main_check(obj, info):
         import array
 
-        bm = mesh_check_helpers.bmesh_copy_from_object(
+        bm = mesh_helpers.bmesh_copy_from_object(
             obj, transform=False, triangulate=False)
 
         edges_non_manifold = array.array(
@@ -33,7 +33,7 @@ class TT_OT_check_manifold(Operator):
         bm.free()
 
     def execute(self, context):
-        return mesh_check_helpers.execute_check(self, context)
+        return mesh_helpers.execute_check(self, context)
 
 
 classes = [TT_OT_check_manifold]

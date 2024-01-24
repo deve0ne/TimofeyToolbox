@@ -1,15 +1,16 @@
 import bpy
 import bmesh
-from .. import mesh_check_helpers
+from ...helpers import mesh_helpers
 
 
 class TT_OT_find_incorrect_geometry(bpy.types.Operator):
     bl_idname = "tt.find_incorrect_geometry"
     bl_label = "Incorrect Geometry"
+    bl_description = "Finds edges with > 2 polygons connected"
 
     @staticmethod
     def main_check(obj, info):
-        bm = mesh_check_helpers.bmesh_copy_from_object(
+        bm = mesh_helpers.bmesh_copy_from_object(
             obj, transform=False, triangulate=False)
 
         # Finding incorrect geometry
@@ -26,7 +27,7 @@ class TT_OT_find_incorrect_geometry(bpy.types.Operator):
         bm.free()
 
     def execute(self, context):
-        return mesh_check_helpers.execute_check(self, context)
+        return mesh_helpers.execute_check(self, context)
 
 
 classes = [TT_OT_find_incorrect_geometry]
