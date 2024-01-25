@@ -18,10 +18,7 @@ class TT_OT_find_incorrect_geometry(bpy.types.Operator):
             edge.index for edge in bm.edges if edge.link_faces.__len__() > 2]
 
         # Storing the results in the object
-        info.append(
-            (("Incorrect Edges: {}").format(
-                len(incorrect_edges)),
-                (bmesh.types.BMEdge,
+        info.append((obj.name, f"Incorrect Edges: {len(incorrect_edges)}",(bmesh.types.BMEdge,
                  incorrect_edges)))
 
         bm.free()

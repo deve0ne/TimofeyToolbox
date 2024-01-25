@@ -3,14 +3,15 @@ import bmesh
 
 
 def execute_check(self, context):
-    obj = context.active_object
-
+    batch_mode = len(context.selected_objects) > 1
     info = []
-    self.main_check(obj, info)
+    
+    for obj in context.selected_objects:
+        self.main_check(obj, info)
+        
+    print(info)
+
     report.update(*info)
-
-    multiple_obj_warning(self, context)
-
     return {'FINISHED'}
 
 
@@ -72,8 +73,3 @@ def bmesh_to_object(obj, bm):
     else:
         bm.to_mesh(me)
         me.update()
-
-def multiple_obj_warning(self, context):
-    if len(context.selected_objects) > 1:
-        self.report(
-            {"INFO"}, "Multiple selected objects. Only the active one will be evaluated")

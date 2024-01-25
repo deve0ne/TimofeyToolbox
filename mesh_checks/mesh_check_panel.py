@@ -31,18 +31,32 @@ class TT_PT_mesh_check(bpy.types.Panel):
             layout.label(text="Result")
             box = layout.box()
             col = box.column()
-            for i, (text, data) in enumerate(info):
-                if is_edit and data and data[1]:
-                    bm_type, _bm_array = data
-                    col.operator("tt.select_report", text=text,
-                                 icon=self._type_to_icon[bm_type]).index = i
-                else:
-                    col.label(text=text)
+    
+            # Group entries by mesh name
+            grouped_info = {}
+            for i, (name, text, data) in enumerate(info):
+                if name not in grouped_info:
+                    grouped_info[name] = []
+                grouped_info[name].append((i, text, data))
+    
+            # Iterate through unique mesh names and create labels
+            for name, entries in grouped_info.items():
+                col.label(text=name)  # Label for the mesh name
+                for i, text, data in entries:
+                    if is_edit and data and data[1]:
+                        bm_type, _bm_array = data
+                        col.operator("tt.select_report", text=text,
+                                     icon=self._type_to_icon[bm_type]).index = i
+                    elif data and data[1]:  # If we want to show 0 result check's, replace this to "else"
+                        col.label(text=text)
 
     def draw(self, context):
         layout = self.layout
 
-        layout.label(text="Checks")
+        batch_mode = False
+        if len(context.selected_objects) > 1:
+            layout.label(text="Batch mode: Multiple objects selected", icon='INFO')
+            batch_mode = True
 
         col = layout.column(align=True)
         col.operator("tt.find_no_sg_faces")

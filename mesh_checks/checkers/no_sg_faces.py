@@ -29,45 +29,15 @@ class TT_OT_find_no_sg_faces(bpy.types.Operator):
         else:
             no_sg_faces = [face.index for face in bm.faces]
 
-        info.append(
-            (("No SG faces: {}").format(
-                len(no_sg_faces)),
-                (bmesh.types.BMFace,
-                 no_sg_faces)))
+        info.append((obj.name, f"No SG faces: {len(no_sg_faces)}",
+                (bmesh.types.BMFace, no_sg_faces)))
 
         bm.free()
 
     def execute(self, context):
         return mesh_helpers.execute_check(self, context)
 
-
-class TT_OT_SelectNoSGfaces(bpy.types.Operator):
-    bl_idname = "tt.select_no_sg_faces"
-    bl_label = "Select Faces with No Smooth Group"
-
-    def execute(self, context):
-        obj = context.active_object
-
-        if not obj or obj.type != "obj" or "no_sg_faces" not in obj:
-            self.report(
-                {"WARNING"}, "No faces to select or active object is not a obj"
-            )
-            return {"CANCELLED"}
-
-        bpy.ops.tt.mode_set(mode="EDIT")
-
-        obj = bmesh.from_edit_mesh(obj.data)
-        obj.faces.ensure_lookup_table()
-
-        for index in obj["no_sg_faces"]:
-            if index < len(obj.faces):
-                obj.faces[index].select_set(True)
-
-        bmesh.update_edit_mesh(obj.data)
-        return {"FINISHED"}
-
-
-classes = (TT_OT_find_no_sg_faces, TT_OT_SelectNoSGfaces)
+classes = (TT_OT_find_no_sg_faces,)
 
 
 register, unregister = bpy.utils.register_classes_factory(classes)

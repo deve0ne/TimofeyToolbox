@@ -37,8 +37,8 @@ class TT_OT_find_degenerates(bpy.types.Operator):
         deleted_face_ids = original_face_ids - new_face_ids
         deleted_edge_ids = original_edge_ids - new_edge_ids
 
-        info.append((f"Degenerate Faces: {len(deleted_face_ids)}", (bmesh.types.BMFace, deleted_face_ids)))
-        info.append((f"Degenerate Edges: {len(deleted_edge_ids)}", (bmesh.types.BMEdge, deleted_edge_ids)))
+        info.append((obj.name, f"Degenerate Faces: {len(deleted_face_ids)}", (bmesh.types.BMFace, deleted_face_ids)))
+        info.append((obj.name, f"Degenerate Edges: {len(deleted_edge_ids)}", (bmesh.types.BMEdge, deleted_edge_ids)))
 
         bm.free()
 

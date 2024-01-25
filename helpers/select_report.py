@@ -2,6 +2,7 @@ import bpy
 import bmesh
 from bpy.types import Operator
 from bpy.props import IntProperty
+from . import mesh_helpers
 
 from . import report
 
@@ -26,26 +27,39 @@ class TT_OT_select_report(Operator):
         bmesh.types.BMFace: "faces",
     }
 
-    def execute(self, context):
-        obj = context.edit_object
+    def execute(self, context):     
         info = report.info()
-        _text, data = info[self.index]
+        name, _text, data = info[self.index]
+        obj = bpy.data.objects[name]
+        
+        #TODO   
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.ops.object.select_all(action='DESELECT')
+        obj.select_set(True)
+        context.view_layer.objects.active = obj
+        bpy.ops.object.mode_set(mode='EDIT')
+        
+        
+        
         bm_type, bm_array = data
-
-        bpy.ops.mesh.reveal()
-        bpy.ops.mesh.select_all(action='DESELECT')
 
         bpy.ops.mesh.select_mode(type=self._type_to_mode[bm_type])
 
-        bm = bmesh.from_edit_mesh(obj.data)
-        elems = getattr(
-            bm, TT_OT_select_report._type_to_attr[bm_type])[:]
+        bm = mesh_helpers.bmesh_from_object(obj)
+        bm.faces.ensure_lookup_table()
 
-        try:
-            for i in bm_array:
-                elems[i].select_set(True)
-        except Exception as e:
-            # possible arrays are out of sync
-            self.report({'WARNING'}, "Report is out of date, re-run check")
+        # Clear existing selection
+        bpy.ops.mesh.reveal()
+        bpy.ops.mesh.select_all(action='DESELECT')
+
+        # Select the elements
+        for i in bm_array:
+            try:
+                bm.faces[i      ].select_set(True)
+            except IndexError:
+                self.report({'WARNING'}, "Report is out of date, re-run check")
+                break
+
+        mesh_helpers.bmesh_to_object(obj, bm)
 
         return {'FINISHED'}

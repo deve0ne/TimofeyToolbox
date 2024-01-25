@@ -6,7 +6,6 @@ from .no_sg_faces import TT_OT_find_no_sg_faces
 from .degenerates import TT_OT_find_degenerates
 from .manifold import TT_OT_check_manifold
 from ...helpers import report
-from ...helpers.mesh_helpers import multiple_obj_warning
 
 
 class TT_Check_All(Operator):
@@ -30,8 +29,6 @@ class TT_Check_All(Operator):
             cls.main_check(obj, info)
 
         report.update(*info)
-
-        multiple_obj_warning(self, context)
 
         return {'FINISHED'}
 

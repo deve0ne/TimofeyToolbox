@@ -23,12 +23,9 @@ class TT_OT_check_manifold(Operator):
         #     (i for i, ele in enumerate(bm.edges) if ele.is_manifold and (not ele.is_contiguous)),
         # )
 
-        info.append((
-            ("Non Manifold Edges: {}").format(
-                len(edges_non_manifold)),
-            (bmesh.types.BMEdge,
-             edges_non_manifold)))
-        # info.append(("Bad Contiguous Edges: {}").format(len(edges_non_contig)), (bmesh.types.BMEdge, edges_non_contig)))
+        info.append((obj.name, f"Non Manifold Edges: {len(edges_non_manifold)}",
+                    (bmesh.types.BMEdge, edges_non_manifold)))
+        # info.append(obj.name, ("Bad Contiguous Edges: {}").format(len(edges_non_contig)), (bmesh.types.BMEdge, edges_non_contig)))
 
         bm.free()
 
