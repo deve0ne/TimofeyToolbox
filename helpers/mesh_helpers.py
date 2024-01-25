@@ -3,13 +3,11 @@ import bmesh
 
 
 def execute_check(self, context):
-    batch_mode = len(context.selected_objects) > 1
     info = []
-    
+
     for obj in context.selected_objects:
-        self.main_check(obj, info)
-        
-    print(info)
+        if obj.type == 'MESH':
+            self.main_check(obj, info)
 
     report.update(*info)
     return {'FINISHED'}
@@ -17,7 +15,7 @@ def execute_check(self, context):
 
 def bmesh_copy_from_object(obj, transform=True, triangulate=True, apply_modifiers=False):
     """Returns a transformed, triangulated copy of the mesh"""
-    
+
     assert obj.type == 'MESH'
 
     if apply_modifiers and obj.modifiers:
@@ -50,6 +48,7 @@ def bmesh_copy_from_object(obj, transform=True, triangulate=True, apply_modifier
         bmesh.ops.triangulate(bm, faces=bm.faces)
 
     return bm
+
 
 def bmesh_from_object(obj):
     """Object/Edit Mode get mesh, use bmesh_to_object() to write back."""

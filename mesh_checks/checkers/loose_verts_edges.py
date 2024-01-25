@@ -18,11 +18,11 @@ class TT_OT_find_loose_verts_edges(bpy.types.Operator):
         loose_edges = [e.index for e in bm.edges if not e.link_faces]
 
         # Storing the results
-        info.append((obj.name, f"Loose verts: { len(loose_verts)}",
-                (bmesh.types.BMVert, loose_verts)))
+        info.append((obj.name, f"Loose verts: {len(loose_verts)}",
+                     (bmesh.types.BMVert, loose_verts)))
 
         info.append((obj.name, f"Loose edges: {len(loose_edges)}",
-                (bmesh.types.BMEdge, loose_edges)))
+                     (bmesh.types.BMEdge, loose_edges)))
 
         bm.free()
 

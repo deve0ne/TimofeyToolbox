@@ -13,7 +13,7 @@ class TT_Check_All(Operator):
     bl_label = "Check All"
     bl_description = "Run all mesh checks"
 
-    check_cls = (
+    checkers = (
         TT_OT_find_no_sg_faces,
         TT_OT_find_loose_verts_edges,
         TT_OT_find_incorrect_geometry,
@@ -21,12 +21,14 @@ class TT_Check_All(Operator):
         TT_OT_check_manifold
     )
 
+    # TODO Too similar to execute_check in mesh helper. Requires merge
     def execute(self, context):
-        obj = context.active_object
-
         info = []
-        for cls in self.check_cls:
-            cls.main_check(obj, info)
+
+        for obj in context.selected_objects:
+            if obj.type == 'MESH':
+                for checker in self.checkers:
+                    checker.main_check(obj, info)
 
         report.update(*info)
 

@@ -26,37 +26,48 @@ class TT_PT_mesh_check(bpy.types.Panel):
     def draw_report(self, context):
         layout = self.layout
         info = report.info()
+
         if info:
             is_edit = context.edit_object is not None
             layout.label(text="Result")
-            box = layout.box()
-            col = box.column()
-    
+            main_box = layout.box()
+            col = main_box.column()
+
             # Group entries by mesh name
             grouped_info = {}
             for i, (name, text, data) in enumerate(info):
                 if name not in grouped_info:
                     grouped_info[name] = []
                 grouped_info[name].append((i, text, data))
-    
+
+            # Determine if there's only one mesh in the info
+            batch_mode = len(grouped_info) > 1
+
             # Iterate through unique mesh names and create labels
             for name, entries in grouped_info.items():
-                col.label(text=name)  # Label for the mesh name
-                for i, text, data in entries:
-                    if is_edit and data and data[1]:
-                        bm_type, _bm_array = data
-                        col.operator("tt.select_report", text=text,
-                                     icon=self._type_to_icon[bm_type]).index = i
-                    elif data and data[1]:  # If we want to show 0 result check's, replace this to "else"
-                        col.label(text=text)
+                # We check for non-zero entries only if there's more than one mesh
+                has_nonzero_entry = any(
+                    data and data[1] for _, text, data in entries)
+
+                if has_nonzero_entry or not batch_mode:
+                    col.label(text=name, icon='OBJECT_DATA')
+                    mesh_box = col.box()
+                    mesh_col = mesh_box.column()
+
+                if has_nonzero_entry:
+                    for i, text, data in entries:
+                        if is_edit and data and data[1]:
+                            bm_type, _bm_array = data
+                            mesh_col.operator("tt.select_report", text=text,
+                                              icon=self._type_to_icon[bm_type]).index = i
+                        # If we want to show 0 result check's, replace this to "else"
+                        elif (data and data[1]):
+                            mesh_col.label(text=text)
+                elif not batch_mode:
+                    mesh_col.label(text="No errors was found in this mesh")
 
     def draw(self, context):
         layout = self.layout
-
-        batch_mode = False
-        if len(context.selected_objects) > 1:
-            layout.label(text="Batch mode: Multiple objects selected", icon='INFO')
-            batch_mode = True
 
         col = layout.column(align=True)
         col.operator("tt.find_no_sg_faces")

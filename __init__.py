@@ -63,10 +63,7 @@ def register():
     addon_updater_ops.register(bl_info)
 
     for c in classes:
-        print(f"register {c}")
         c.register()
-        print(f"succsess")
-        print()
 
 
 def unregister():

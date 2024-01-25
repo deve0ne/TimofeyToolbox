@@ -1,5 +1,6 @@
 import bpy
 import math
+from ..helpers import popup
 
 
 class TT_OT_box_mapping(bpy.types.Operator):
@@ -69,7 +70,7 @@ class TT_OT_box_mapping(bpy.types.Operator):
         if bpy.context.selected_objects:
             user_selected_objects = bpy.context.selected_objects
         else:
-            print("No objects are currently selected.")
+            popup.show_popup("No selected objects", "Error")
             return {"FINISHED"}
 
         helper_names = [
