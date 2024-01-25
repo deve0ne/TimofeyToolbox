@@ -42,14 +42,7 @@ class TT_OT_fix_mat_paths(bpy.types.Operator):
         return {'FINISHED'}
 
 
-classes = [TT_OT_fix_mat_paths]
+classes = (TT_OT_fix_mat_paths,)
 
 
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-
-def unregister():
-    for cls in classes:
-        bpy.utils.unregister_class(cls)
+register, unregister = bpy.utils.register_classes_factory(classes)

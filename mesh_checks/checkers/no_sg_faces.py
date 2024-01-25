@@ -67,14 +67,7 @@ class TT_OT_SelectNoSGfaces(bpy.types.Operator):
         return {"FINISHED"}
 
 
-classes = [TT_OT_find_no_sg_faces, TT_OT_SelectNoSGfaces]
+classes = (TT_OT_find_no_sg_faces, TT_OT_SelectNoSGfaces)
 
 
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-
-def unregister():
-    for cls in classes:
-        bpy.utils.unregister_class(cls)
+register, unregister = bpy.utils.register_classes_factory(classes)

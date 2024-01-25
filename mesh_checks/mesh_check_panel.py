@@ -62,14 +62,7 @@ class TT_PT_mesh_check(bpy.types.Panel):
         layout.operator("tt.bounding_box_mode")
 
 
-classes = [TT_PT_mesh_check, TT_OT_select_report]
+classes = (TT_PT_mesh_check, TT_OT_select_report)
 
 
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-
-def unregister():
-    for cls in classes:
-        bpy.utils.unregister_class(cls)
+register, unregister = bpy.utils.register_classes_factory(classes)

@@ -26,14 +26,7 @@ class TT_OT_uv_renamer(bpy.types.Operator):
         return {"FINISHED"}
 
 
-classes = [TT_OT_uv_renamer]
+classes = (TT_OT_uv_renamer,)
 
 
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-
-def unregister():
-    for cls in classes:
-        bpy.utils.unregister_class(cls)
+register, unregister = bpy.utils.register_classes_factory(classes)

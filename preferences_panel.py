@@ -99,16 +99,9 @@ class TT_preferences(bpy.types.AddonPreferences):
 		# ops.url=addon_updater_ops.updater.website
 
 
-classes = [
+classes = (
 	TT_preferences,
 	# TT_PT_updater
-]
+)
 
-def register():
-	for cls in classes:
-		bpy.utils.register_class(cls)
-
-
-def unregister():
-	for cls in reversed(classes):
-		bpy.utils.unregister_class(cls)
+register, unregister = bpy.utils.register_classes_factory(classes)

@@ -1,5 +1,5 @@
 from bpy.types import Operator
-from bpy.utils import register_class, unregister_class
+from bpy.utils import register_classes_factory
 from .incorrect_geometry import TT_OT_find_incorrect_geometry
 from .loose_verts_edges import TT_OT_find_loose_verts_edges
 from .no_sg_faces import TT_OT_find_no_sg_faces
@@ -36,14 +36,6 @@ class TT_Check_All(Operator):
         return {'FINISHED'}
 
 
-classes = [TT_Check_All]
+classes = (TT_Check_All,)
 
-
-def register():
-    for cls in classes:
-        register_class(cls)
-
-
-def unregister():
-    for cls in classes:
-        unregister_class(cls)
+register, unregister = register_classes_factory(classes)

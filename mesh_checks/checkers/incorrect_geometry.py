@@ -30,14 +30,7 @@ class TT_OT_find_incorrect_geometry(bpy.types.Operator):
         return mesh_helpers.execute_check(self, context)
 
 
-classes = [TT_OT_find_incorrect_geometry]
+classes = (TT_OT_find_incorrect_geometry,)
 
 
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-
-def unregister():
-    for cls in classes:
-        bpy.utils.unregister_class(cls)
+register, unregister = bpy.utils.register_classes_factory(classes)

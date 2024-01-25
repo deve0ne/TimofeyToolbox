@@ -23,14 +23,7 @@ class TT_PT_mesh_operations(bpy.types.Panel):
         # col.operator("tt.fix_mat_paths")
 
 
-classes = [TT_PT_mesh_operations]
+classes = (TT_PT_mesh_operations,)
 
 
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-
-def unregister():
-    for cls in classes:
-        bpy.utils.unregister_class(cls)
+register, unregister = bpy.utils.register_classes_factory(classes)

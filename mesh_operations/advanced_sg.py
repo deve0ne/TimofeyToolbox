@@ -157,14 +157,7 @@ class TT_PT_advanced_sg(bpy.types.Panel):
         return context.mode == "EDIT_MESH"
 
 
-classes = [TT_OT_advanced_sg, TT_PT_advanced_sg]
+classes = (TT_OT_advanced_sg, TT_PT_advanced_sg)
 
 
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-
-def unregister():
-    for cls in classes:
-        bpy.utils.unregister_class(cls)
+register, unregister = bpy.utils.register_classes_factory(classes)
