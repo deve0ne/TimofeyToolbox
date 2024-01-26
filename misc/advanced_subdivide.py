@@ -5,6 +5,7 @@ import bmesh
 class TT_OT_advanced_subdivide(bpy.types.Operator):
     bl_idname = "tt.advanced_subdivide"
     bl_label = "Advanced Subdivide"
+    bl_description = "In development"
     bl_options = {"UNDO"}
     name: bpy.props.StringProperty()
 
@@ -48,9 +49,6 @@ class TT_OT_advanced_subdivide(bpy.types.Operator):
         return {'FINISHED'}
 
 
-def register():
-    bpy.utils.register_class(TT_OT_advanced_subdivide)
+classes = (TT_OT_advanced_subdivide,)
 
-
-def unregister():
-    bpy.utils.unregister_class(TT_OT_advanced_subdivide)
+register, unregister = bpy.utils.register_classes_factory(classes)

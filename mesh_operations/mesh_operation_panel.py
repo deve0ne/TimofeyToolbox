@@ -20,17 +20,10 @@ class TT_PT_mesh_operations(bpy.types.Panel):
         col.operator("tt.dissolve_degenerates")
         col.operator("tt.uv_replace_to_dots")
         col.operator("tt.box_mapping")
-        # col.operator("tt.fix_mat_names")
+        # col.operator("tt.fix_mat_paths")
 
 
-classes = [TT_PT_mesh_operations]
+classes = (TT_PT_mesh_operations,)
 
 
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-
-def unregister():
-    for cls in classes:
-        bpy.utils.unregister_class(cls)
+register, unregister = bpy.utils.register_classes_factory(classes)

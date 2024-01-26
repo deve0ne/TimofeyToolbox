@@ -1,15 +1,16 @@
 import bpy
 import bmesh
-from .. import mesh_check_helpers
+from ...helpers import mesh_helpers
 
 
 class TT_OT_find_degenerates(bpy.types.Operator):
     bl_idname = "tt.find_degenerates"
     bl_label = "Degenerates"
+    bl_description = "Finds degenerate faces and edges"
 
     @staticmethod
     def main_check(obj, info):
-        bm = mesh_check_helpers.bmesh_copy_from_object(
+        bm = mesh_helpers.bmesh_copy_from_object(
             obj, transform=False, triangulate=False)
 
         # It's difficult to track which elements were removed, so we create a custom layers
@@ -36,23 +37,16 @@ class TT_OT_find_degenerates(bpy.types.Operator):
         deleted_face_ids = original_face_ids - new_face_ids
         deleted_edge_ids = original_edge_ids - new_edge_ids
 
-        info.append((f"Degenerate Faces: {len(deleted_face_ids)}", (bmesh.types.BMFace, deleted_face_ids)))
-        info.append((f"Degenerate Edges: {len(deleted_edge_ids)}", (bmesh.types.BMEdge, deleted_edge_ids)))
+        info.append((obj.name, f"Degenerate Faces: {len(deleted_face_ids)}", (bmesh.types.BMFace, deleted_face_ids)))
+        info.append((obj.name, f"Degenerate Edges: {len(deleted_edge_ids)}", (bmesh.types.BMEdge, deleted_edge_ids)))
 
         bm.free()
 
     def execute(self, context):
-        return mesh_check_helpers.execute_check(self, context)
+        return mesh_helpers.execute_check(self, context)
 
 
-classes = [TT_OT_find_degenerates]
+classes = (TT_OT_find_degenerates,)
 
-
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-
-def unregister():
-    for cls in classes:
-        bpy.utils.unregister_class(cls)
+        
+register, unregister = bpy.utils.register_classes_factory(classes)

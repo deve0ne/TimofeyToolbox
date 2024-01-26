@@ -6,7 +6,7 @@ from .misc import correct_uv_button, texture_optimization
 bl_info = {
     "name": "TimofeyToolbox",
     "author": "Deveone",
-    "version": (1, 4, 7),
+    "version": (1, 4, 8),
     "blender": (3, 5, 1),
     "location": "3D View > Sidebar",
     "wiki_url": "https://github.com/deve0ne/TimofeyToolbox",

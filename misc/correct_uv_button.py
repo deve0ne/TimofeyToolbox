@@ -13,7 +13,3 @@ def register():
 
 def unregister():
     bpy.types.VIEW3D_HT_tool_header.remove(draw_correct_UV_button)
-
-
-if __name__ == "__main__":
-    register()

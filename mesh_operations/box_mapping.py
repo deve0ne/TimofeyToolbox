@@ -1,10 +1,12 @@
 import bpy
 import math
+from ..helpers import popup
 
 
 class TT_OT_box_mapping(bpy.types.Operator):
     bl_idname = "tt.box_mapping"
     bl_label = "Box Mapping"
+    bl_description = "Box mapping (2x2x2) modifier with the box center at the origin"
     bl_options = {"UNDO"}
 
     created_objects = []
@@ -68,7 +70,7 @@ class TT_OT_box_mapping(bpy.types.Operator):
         if bpy.context.selected_objects:
             user_selected_objects = bpy.context.selected_objects
         else:
-            print("No objects are currently selected.")
+            popup.show_popup("No selected objects", "Error")
             return {"FINISHED"}
 
         helper_names = [
@@ -123,14 +125,7 @@ class TT_OT_box_mapping(bpy.types.Operator):
         return {"FINISHED"}
 
 
-classes = [TT_OT_box_mapping]
+classes = (TT_OT_box_mapping,)
 
 
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-
-def unregister():
-    for cls in classes:
-        bpy.utils.unregister_class(cls)
+register, unregister = bpy.utils.register_classes_factory(classes)

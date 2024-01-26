@@ -3,20 +3,19 @@ import bmesh
 
 
 def execute_check(self, context):
-    obj = context.active_object
-
     info = []
-    self.main_check(obj, info)
+
+    for obj in context.selected_objects:
+        if obj.type == 'MESH':
+            self.main_check(obj, info)
+
     report.update(*info)
-
-    multiple_obj_warning(self, context)
-
     return {'FINISHED'}
 
 
 def bmesh_copy_from_object(obj, transform=True, triangulate=True, apply_modifiers=False):
     """Returns a transformed, triangulated copy of the mesh"""
-    
+
     assert obj.type == 'MESH'
 
     if apply_modifiers and obj.modifiers:
@@ -36,9 +35,6 @@ def bmesh_copy_from_object(obj, transform=True, triangulate=True, apply_modifier
             bm = bmesh.new()
             bm.from_mesh(me)
 
-    # TODO. remove all customdata layers.
-    # would save ram
-
     if transform:
         matrix = obj.matrix_world.copy()
         if not matrix.is_identity:
@@ -54,7 +50,25 @@ def bmesh_copy_from_object(obj, transform=True, triangulate=True, apply_modifier
     return bm
 
 
-def multiple_obj_warning(self, context):
-    if len(context.selected_objects) > 1:
-        self.report(
-            {"INFO"}, "Multiple selected objects. Only the active one will be evaluated")
+def bmesh_from_object(obj):
+    """Object/Edit Mode get mesh, use bmesh_to_object() to write back."""
+    me = obj.data
+
+    if obj.mode == 'EDIT':
+        bm = bmesh.from_edit_mesh(me)
+    else:
+        bm = bmesh.new()
+        bm.from_mesh(me)
+
+    return bm
+
+
+def bmesh_to_object(obj, bm):
+    """Object/Edit Mode update the object."""
+    me = obj.data
+
+    if obj.mode == 'EDIT':
+        bmesh.update_edit_mesh(me, loop_triangles=True)
+    else:
+        bm.to_mesh(me)
+        me.update()

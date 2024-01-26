@@ -18,10 +18,6 @@ class TT_PT_texture_optimization(bpy.types.Panel):
         col.prop(system, "gl_texture_limit", text="Limit Size")
         col.prop(system, "anisotropic_filter")
 
+classes = (TT_PT_texture_optimization,)
 
-def register():
-    bpy.utils.register_class(TT_PT_texture_optimization)
-
-
-def unregister():
-    bpy.utils.unregister_class(TT_PT_texture_optimization)
+register, unregister = bpy.utils.register_classes_factory(classes)

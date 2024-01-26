@@ -1,23 +1,25 @@
 import bpy
 import bmesh
+from math import radians
+from ..helpers import mesh_helpers, popup
 
 
-class TT_OT_advanced_sg(bpy.types.Operator):
+class TT_OT_advanced_sg_init(bpy.types.Operator):
     bl_idname = "tt.advanced_init_smooth_groups"
     bl_label = "Advanced Recalculate SG"
-    bl_description = "Initialize smoothing groups"
+    bl_description = "Recalculates Smoothing Groups from Hard Edges and fixes normal bugs"
     bl_options = {"UNDO"}
 
     def execute(self, context):
         bpy.ops.dt.init_smooth_group()  # init default sg algorithm
 
-        mesh = context.object.data
-        bm = bmesh.from_edit_mesh(mesh)
+        obj = context.object
+        bm = mesh_helpers.bmesh_from_object(context.object)
         bm.faces.ensure_lookup_table()
 
         self.fix_sg(bm)
 
-        bmesh.update_edit_mesh(mesh)
+        mesh_helpers.bmesh_to_object(obj, bm)
         bm.free()
 
         return {"FINISHED"}
@@ -41,16 +43,16 @@ class TT_OT_advanced_sg(bpy.types.Operator):
             self.reassign_island_sg(bm, sg_bug_island, free_sg)
 
             iterations += 1
-            if iterations > 1000:  # Защита от бесконечного цикла
+            if iterations > 1000:  # Infinite loop protection
                 print("limited")
+                popup.show_popup(icon="ERROR",
+                                 title="Aborting: Too much bugs",
+                                 message="Too large mesh or infinite loop")
                 break
 
-    # Нейрокод
     def find_one_sg_bug(self, bm, sg_layer):
-        # Словарь для группировки лиц по группам сглаживания
         sg_dict = {}
 
-        # Проходим по всем лицам и группируем их по группам сглаживания
         for face in bm.faces:
             sg = face[sg_layer]
             if sg in sg_dict:
@@ -58,7 +60,6 @@ class TT_OT_advanced_sg(bpy.types.Operator):
             else:
                 sg_dict[sg] = [face]
 
-        # Функция для поиска в глубину
         def dfs(face, visited):
             visited.add(face)
             group = [face]
@@ -91,7 +92,6 @@ class TT_OT_advanced_sg(bpy.types.Operator):
         sg_bug_island = set()
         sg_bug_island.add(sg_bug_index)
 
-        # Use a queue to explore connected polygons
         queue = [sg_bug_face]
 
         while queue:
@@ -133,6 +133,45 @@ class TT_OT_advanced_sg(bpy.types.Operator):
         bm.faces.ensure_lookup_table()
 
 
+bpy.types.Scene.tt_sg_angle = bpy.props.FloatProperty(
+    name="SG Angle",
+    description="Angle threshold for setting hard edges",
+    subtype='ANGLE',
+    default=radians(45),
+    min=0.0,
+    max=radians(180),
+    step=100,
+)
+
+
+class TT_OT_auto_sg_by_angle(bpy.types.Operator):
+    bl_idname = "tt.auto_sg_by_angle"
+    bl_label = "Auto SG"
+    bl_description = "Automatically set smooth groups based on angle"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        obj = context.active_object
+
+        bm = mesh_helpers.bmesh_from_object(obj)
+        bm.edges.ensure_lookup_table()
+
+        angle_radians = context.scene.tt_sg_angle
+
+        # recalculating hard edges
+        for edge in bm.edges:
+            if edge.is_manifold:
+                angle = edge.calc_face_angle_signed()
+                edge.smooth = abs(angle) <= angle_radians
+
+        mesh_helpers.bmesh_to_object(obj, bm)
+
+        # recalculating SG's
+        bpy.ops.tt.advanced_init_smooth_groups()
+
+        return {'FINISHED'}
+
+
 class TT_PT_advanced_sg(bpy.types.Panel):
     bl_label = "Timofey Toolbox SG"
     bl_idname = "TT_PT_TT_SG_panel"
@@ -143,23 +182,18 @@ class TT_PT_advanced_sg(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         col = layout.column(align=True)
+
         col.operator("tt.advanced_init_smooth_groups")
-        # col.operator("tt.find_no_sg_faces")
+
+        row = col.row(align=True)
+        row.operator("tt.auto_sg_by_angle", text="Auto SG")
+        row.prop(context.scene, "tt_sg_angle", text="")
 
     @classmethod
     def poll(cls, context):
-        # Only allow in edit mode for a selected mesh.
         return context.mode == "EDIT_MESH"
 
 
-classes = [TT_OT_advanced_sg, TT_PT_advanced_sg]
+classes = (TT_OT_advanced_sg_init, TT_PT_advanced_sg, TT_OT_auto_sg_by_angle,)
 
-
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-
-def unregister():
-    for cls in classes:
-        bpy.utils.unregister_class(cls)
+register, unregister = bpy.utils.register_classes_factory(classes)

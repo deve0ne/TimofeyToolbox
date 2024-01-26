@@ -1,0 +1,70 @@
+name: Blender release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: extract_addon_version
+        run: |
+          VERSION_LINE=$(grep -oP '"version": \(\K[0-9, ]+' __init__.py)
+          VERSION=$(echo $VERSION_LINE | tr -d ' ' | sed 's/,/./g')
+          VERSION_TAG="v$VERSION"
+          echo "VERSION_TAG=$VERSION_TAG" >> $GITHUB_ENV
+
+      - name: Check if tag already exists
+        id: check_tag
+        run: |
+          if git tag -l | grep -qx "$VERSION_TAG"; then
+            echo "Tag $VERSION_TAG already exists. Exiting..."
+            echo "TAG_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "TAG_EXISTS=false" >> $GITHUB_ENV
+          fi
+
+      - name: Create Git tag
+        if: env.TAG_EXISTS == 'false'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a "$VERSION_TAG" -m "Release $VERSION_TAG"
+          git push origin "$VERSION_TAG"
+
+      - name: Create Release
+        id: create_release
+        if: env.TAG_EXISTS == 'false'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.VERSION_TAG }}
+          release_name: ${{ env.VERSION_TAG }}
+          draft: false
+          prerelease: false
+
+      - name: Prepare source code for packaging
+        if: env.TAG_EXISTS == 'false'
+        run: |
+          shopt -s extglob
+          mkdir TimofeyToolbox
+          cp -r !(TimofeyToolbox|.git|.github|.git*) TimofeyToolbox/
+          zip -r TimofeyToolbox.zip TimofeyToolbox
+
+      - name: Upload ZIP to release
+        if: env.TAG_EXISTS == 'false'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./TimofeyToolbox.zip
+          asset_name: TimofeyToolbox.zip
+          asset_content_type: application/zip
