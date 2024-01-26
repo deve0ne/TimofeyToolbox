@@ -1,129 +1,97 @@
 import bpy
 import math
-from ..helpers import popup
 
+# Global variables
+HELPER_NAMES = [
+    "UVW_Gizmo",
+    "UVW_Top",
+    "UVW_Bottom",
+    "UVW_Front",
+    "UVW_Back",
+    "UVW_Left",
+    "UVW_Right",
+]
+
+ROTATION_CONFIGS = [
+    (0, 0, 0),  # TOP
+    (math.pi, 0, 0),  # BOTTOM
+    (math.pi / 2, 0, 0),  # FRONT
+    (-math.pi / 2, 0, 0),  # BACK
+    (0, -math.pi / 2, 0),  # LEFT
+    (0, math.pi / 2, 0),  # RIGHT
+]
 
 class TT_OT_box_mapping(bpy.types.Operator):
     bl_idname = "tt.box_mapping"
     bl_label = "Box Mapping"
-    bl_description = "Box mapping (2x2x2) modifier with the box center at the origin"
+    bl_description = "Apply box mapping (2x2x2) modifier with the box center at the origin"
     bl_options = {"UNDO"}
 
-    created_objects = []
-
     def create_arrow(self, name, location, rotation_euler=(0, 0, 0)):
-        bpy.ops.object.empty_add(
-            type="SINGLE_ARROW", align="WORLD", location=location, scale=(1, 1, 1)
-        )
+        bpy.ops.object.empty_add(type="SINGLE_ARROW", align="WORLD", location=location)
+        arrow = bpy.context.object
+        arrow.name = name
+        arrow.rotation_euler = rotation_euler
+        return arrow
 
-        new_arrow = bpy.context.object
-        new_arrow.name = name
-        new_arrow.rotation_euler = rotation_euler
-
-        self.created_objects.append(new_arrow)
-
-        rotation_angles = {
-            "UVW_Left": -90,
-            "UVW_Right": 90,
-            "UVW_Back": 180,
-            "UVW_Bottom": 180,
-        }
-
-        if name in rotation_angles:
-            new_arrow.rotation_euler.rotate_axis(
-                "Z", math.radians(rotation_angles[name])
-            )
-
-        return new_arrow
-
-    def create_gizmo(self, helper_names):
-        rotation_configs = [
-            (0, 0, 0),  # TOP
-            (1.5708 * 2, 0, 0),  # BOTTOM
-            (1.5708, 0, 0),  # FRONT
-            (-1.5708, 0, 0),  # BACK
-            (0, -1.5708, 0),  # LEFT
-            (0, 1.5708, 0),  # RIGHT
-        ]
-
-        for i in range(0, 6):
-            self.create_arrow(
-                helper_names[i + 1], (0, 0, 0), rotation_configs[i])
-
-        bpy.ops.object.empty_add(
-            type="CUBE", align="WORLD", location=(0, 0, 0), scale=(1, 1, 1)
-        )
-
-        bpy.context.object.name = helper_names[0]
+    def create_gizmo(self):
+        parent_cube = bpy.ops.object.empty_add(type="CUBE", align="WORLD", location=(0, 0, 0))
         parent_cube = bpy.context.object
+        parent_cube.name = HELPER_NAMES[0]
 
-        for obj in self.created_objects:
-            obj.parent = parent_cube
+        arrows = []
+        for i, rotation in enumerate(ROTATION_CONFIGS):
+            arrow = self.create_arrow(HELPER_NAMES[i + 1], (0, 0, 0), rotation)
+            arrow.parent = parent_cube
+            arrows.append(arrow)
+
+        return parent_cube, arrows
 
     def execute(self, context):
-        user_mode = bpy.context.object.mode
-        if user_mode != "OBJECT":
+        if context.object.mode != "OBJECT":
             bpy.ops.object.mode_set(mode="OBJECT")
 
-        self.created_objects = []
+        selected_objects = context.selected_objects
+        if not selected_objects:
+            self.report({'ERROR'}, "No selected objects")
+            return {'CANCELLED'}
 
-        if bpy.context.selected_objects:
-            user_selected_objects = bpy.context.selected_objects
+        # Find existing gizmo objects
+        gizmo_objects = [bpy.data.objects.get(name) for name in HELPER_NAMES]
+        created_gizmos = False
+        if not all(gizmo_objects):
+            # Create gizmo objects
+            parent_cube, arrows = self.create_gizmo()
+            created_gizmos = True
         else:
-            popup.show_popup("No selected objects", "Error")
-            return {"FINISHED"}
+            parent_cube, arrows = gizmo_objects[0], gizmo_objects[1:]
 
-        helper_names = [
-            "UVW_Gizmo",
-            "UVW_Top",
-            "UVW_Bottom",
-            "UVW_Front",
-            "UVW_Back",
-            "UVW_Left",
-            "UVW_Right",
-        ]
+        # Apply UV projection
+        for obj in selected_objects:
+            # Remove existing UV_PROJECT modifiers
+            uv_modifiers = [mod for mod in obj.modifiers if mod.type == "UV_PROJECT"]
+            for mod in uv_modifiers:
+                obj.modifiers.remove(mod)
 
-        finded_objects = []
-        for name in helper_names:
-            obj = bpy.data.objects.get(name)
-            if obj:
-                finded_objects.append(obj)
-
-        if len(finded_objects) == 7:
-            self.created_objects = finded_objects[-6:]
-        else:
-            if len(finded_objects) != 0:
-                for obj in finded_objects:
-                    bpy.data.objects.remove(obj)
-
-            self.create_gizmo(helper_names)
-
-        for obj in user_selected_objects:
-            modifiers_to_remove = [
-                modifier for modifier in obj.modifiers if modifier.type == "UV_PROJECT"
-            ]
-
-            for modifier in modifiers_to_remove:
-                obj.modifiers.remove(modifier)
-
-            uv_project_modifier = obj.modifiers.new(
-                "UV Box Mapping 2x2x2", "UV_PROJECT"
-            )
+            # Add new UV_PROJECT modifier
+            uv_project_modifier = obj.modifiers.new(name="UV Box Mapping 2x2x2", type="UV_PROJECT")
             uv_project_modifier.projector_count = 6
+            for i, projector in enumerate(uv_project_modifier.projectors):
+                obj.select_set(True)
+                context.view_layer.objects.active = obj
+                projector.object = arrows[i]
 
-            for i in range(6):
-                uv_project_modifier.projectors[i].object = self.created_objects[i]
+            # Apply modifier if needed
+            if not context.scene.tt_keep_as_modifier:
+                bpy.ops.object.modifier_apply(modifier=uv_project_modifier.name)
 
-        bpy.ops.object.select_all(action="DESELECT")
-        for obj in user_selected_objects:
-            obj.select_set(True)
+        # Clean up if not keeping as modifier and gizmos were created by the script
+        if not context.scene.tt_keep_as_modifier and created_gizmos:
+            bpy.data.objects.remove(parent_cube, do_unlink=True)
+            for arrow in arrows:
+                bpy.data.objects.remove(arrow, do_unlink=True)
 
-        bpy.context.view_layer.objects.active = user_selected_objects[0]
-
-        bpy.ops.object.mode_set(mode=user_mode)
-
-        return {"FINISHED"}
-
+        return {'FINISHED'}
 
 classes = (TT_OT_box_mapping,)
 
