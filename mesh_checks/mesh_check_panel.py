@@ -43,13 +43,16 @@ class TT_PT_mesh_check(bpy.types.Panel):
             # Determine if there's only one mesh in the info
             batch_mode = len(grouped_info) > 1
 
+            # Flag to track if any errors are found
+            any_errors_found = False
+
             # Iterate through unique mesh names and create labels
             for name, entries in grouped_info.items():
-                # We check for non-zero entries only if there's more than one mesh
-                has_nonzero_entry = any(
-                    data and data[1] for _, text, data in entries)
+                has_nonzero_entry = any(data and data[1] for _, text, data in entries)
+                any_errors_found |= has_nonzero_entry  # Update the flag if any errors are found
 
                 if has_nonzero_entry or not batch_mode:
+                    # if not batch_mode:
                     col.label(text=name, icon='OBJECT_DATA')
                     mesh_box = col.box()
                     mesh_col = mesh_box.column()
@@ -60,11 +63,14 @@ class TT_PT_mesh_check(bpy.types.Panel):
                             bm_type, _bm_array = data
                             mesh_col.operator("tt.select_report", text=text,
                                               icon=self._type_to_icon[bm_type]).index = i
-                        # If we want to show 0 result check's, replace this to "else"
                         elif (data and data[1]):
                             mesh_col.label(text=text)
                 elif not batch_mode:
-                    mesh_col.label(text="No errors was found in this mesh")
+                    mesh_col.label(text="No errors were found")
+
+            # If in batch mode and no errors were found, display a single message
+            if batch_mode and not any_errors_found:
+                col.label(text=f"No errors were found in {len(grouped_info.items())} selected")
 
     def draw(self, context):
         layout = self.layout
@@ -74,7 +80,7 @@ class TT_PT_mesh_check(bpy.types.Panel):
         col.operator("tt.find_loose_verts_edges")
         col.operator("tt.find_incorrect_geometry")
         col.operator("tt.find_degenerates")
-        col.operator("tt.check_manifold")
+        # col.operator("tt.check_manifold")
 
         layout.operator("tt.check_all")
 

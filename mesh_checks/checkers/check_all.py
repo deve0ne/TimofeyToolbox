@@ -18,7 +18,7 @@ class TT_Check_All(Operator):
         TT_OT_find_loose_verts_edges,
         TT_OT_find_incorrect_geometry,
         TT_OT_find_degenerates,
-        TT_OT_check_manifold
+        # TT_OT_check_manifold
     )
 
     # TODO Too similar to execute_check in mesh helper. Requires merge
