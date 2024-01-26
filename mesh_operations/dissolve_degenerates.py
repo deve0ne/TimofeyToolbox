@@ -10,10 +10,10 @@ class TT_OT_dissolve_degenerates(bpy.types.Operator):
     bl_description = "Dissolves degenerate edges and faces in the mesh. Use with caution!"
     bl_options = {'UNDO'}
 
-    @classmethod
-    def poll(cls, context):
-        obj = context.active_object
-        return obj is not None and obj.type == 'MESH' and (obj.mode in {'OBJECT, EDIT'})
+    # @classmethod
+    # def poll(cls, context):
+    #     obj = context.active_object
+    #     return obj is not None and obj.type == 'MESH' and (obj.mode in {'OBJECT, EDIT'})
 
     def execute(self, context):
         obj = context.active_object

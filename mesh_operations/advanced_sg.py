@@ -44,7 +44,6 @@ class TT_OT_advanced_sg_init(bpy.types.Operator):
 
             iterations += 1
             if iterations > 1000:  # Infinite loop protection
-                print("limited")
                 popup.show_popup(icon="ERROR",
                                  title="Aborting: Too much bugs",
                                  message="Too large mesh or infinite loop")
