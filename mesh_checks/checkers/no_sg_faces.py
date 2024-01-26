@@ -30,12 +30,13 @@ class TT_OT_find_no_sg_faces(bpy.types.Operator):
             no_sg_faces = [face.index for face in bm.faces]
 
         info.append((obj.name, f"No SG faces: {len(no_sg_faces)}",
-                (bmesh.types.BMFace, no_sg_faces)))
+                     (bmesh.types.BMFace, no_sg_faces)))
 
         bm.free()
 
     def execute(self, context):
         return mesh_helpers.execute_check(self, context)
+
 
 classes = (TT_OT_find_no_sg_faces,)
 
