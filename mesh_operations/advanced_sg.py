@@ -150,23 +150,22 @@ class TT_OT_auto_sg_by_angle(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        obj = context.active_object
-
-        bm = mesh_helpers.bmesh_from_object(obj)
-        bm.edges.ensure_lookup_table()
-
         angle_radians = context.scene.tt_sg_angle
+        
+        for obj in context.selected_objects:
+            bm = mesh_helpers.bmesh_from_object(obj)
+            bm.edges.ensure_lookup_table()
 
-        # recalculating hard edges
-        for edge in bm.edges:
-            if edge.is_manifold:
-                angle = edge.calc_face_angle_signed()
-                edge.smooth = abs(angle) <= angle_radians
+            # recalculating hard edges
+            for edge in bm.edges:
+                if edge.is_manifold:
+                    angle = edge.calc_face_angle_signed()
+                    edge.smooth = abs(angle) <= angle_radians
 
-        mesh_helpers.bmesh_to_object(obj, bm)
+            mesh_helpers.bmesh_to_object(obj, bm)
 
-        # recalculating SG's
-        bpy.ops.tt.advanced_init_smooth_groups()
+            # recalculating SG's
+            bpy.ops.tt.advanced_init_smooth_groups()
 
         return {'FINISHED'}
 
