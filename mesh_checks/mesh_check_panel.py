@@ -2,6 +2,7 @@ import bpy
 from bmesh import types
 from ..helpers import report
 from ..helpers.select_report import TT_OT_select_report
+from ..misc import visibility_cls
 
 
 class TT_PT_mesh_check(bpy.types.Panel):
@@ -91,6 +92,8 @@ class TT_PT_mesh_check(bpy.types.Panel):
         layout.label(text="Viewer modes")
 
         layout.operator("tt.bounding_box_mode")
+        layout.operator("tt.toggle_cls_visibility")
+        
 
 
 classes = (TT_PT_mesh_check, TT_OT_select_report)

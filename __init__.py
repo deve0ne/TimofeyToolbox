@@ -1,7 +1,7 @@
 from .rizom_uv import uv_renamer
 from . import preferences_panel
 from . import addon_updater_ops
-from .misc import correct_uv_button, texture_optimization
+from .misc import correct_uv_button, texture_optimization, visibility_cls
 
 bl_info = {
     "name": "TimofeyToolbox",
@@ -56,7 +56,8 @@ classes.extend([uv_renamer,
 
 classes.extend([preferences_panel,
                 correct_uv_button,
-                texture_optimization])
+                texture_optimization,
+                visibility_cls])
 
 
 def register():

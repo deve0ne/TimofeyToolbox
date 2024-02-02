@@ -1,10 +1,10 @@
 import bpy
 import bmesh
-from math import radians
+from math import radians, pi
 from ..helpers import mesh_helpers, popup
 
 
-class TT_OT_advanced_sg_init(bpy.types.Operator):
+class TT_OT_advanced_init_smooth_groups(bpy.types.Operator):
     bl_idname = "tt.advanced_init_smooth_groups"
     bl_label = "Advanced Recalculate SG"
     bl_description = "Recalculates Smoothing Groups from Hard Edges and fixes normal bugs"
@@ -152,7 +152,13 @@ class TT_OT_auto_sg_by_angle(bpy.types.Operator):
     def execute(self, context):
         angle_radians = context.scene.tt_sg_angle
         
-        for obj in context.selected_objects:
+        #reversed so active object stays last
+        for obj in reversed(context.selected_objects):
+            #TEMP
+            bpy.context.view_layer.objects.active = obj
+            bpy.ops.dt.init_smooth_group()
+            bpy.ops.dt.preview_sg()
+            
             bm = mesh_helpers.bmesh_from_object(obj)
             bm.edges.ensure_lookup_table()
 
@@ -192,6 +198,6 @@ class TT_PT_advanced_sg(bpy.types.Panel):
         return context.mode == "EDIT_MESH"
 
 
-classes = (TT_OT_advanced_sg_init, TT_PT_advanced_sg, TT_OT_auto_sg_by_angle,)
+classes = (TT_OT_advanced_init_smooth_groups, TT_PT_advanced_sg, TT_OT_auto_sg_by_angle,)
 
 register, unregister = bpy.utils.register_classes_factory(classes)
