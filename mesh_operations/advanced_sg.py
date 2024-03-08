@@ -171,7 +171,7 @@ class TT_OT_auto_sg_by_angle(bpy.types.Operator):
             mesh_helpers.bmesh_to_object(obj, bm)
 
             # recalculating SG's
-            bpy.ops.tt.advanced_init_smooth_groups()
+            bpy.ops.dt.init_smooth_group()
 
         return {'FINISHED'}
 
@@ -187,7 +187,7 @@ class TT_PT_advanced_sg(bpy.types.Panel):
         layout = self.layout
         col = layout.column(align=True)
 
-        col.operator("tt.advanced_init_smooth_groups")
+        # col.operator("tt.advanced_init_smooth_groups")
 
         row = col.row(align=True)
         row.operator("tt.auto_sg_by_angle", text="Auto SG")
