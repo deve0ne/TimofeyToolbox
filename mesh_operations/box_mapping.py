@@ -18,7 +18,7 @@ ROTATION_CONFIGS = [
     (math.pi / 2, 0, 0),  # FRONT
     (-math.pi / 2, 0, 0),  # BACK
     (0, -math.pi / 2, 0),  # LEFT
-    (0, math.pi / 2, 0),  # RIGHT
+    (math.pi / 2, math.pi, math.pi / 2),  # RIGHT TODO simplify and verify
 ]
 
 class TT_OT_box_mapping(bpy.types.Operator):
